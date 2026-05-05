@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nakim.dev
 
-## Getting Started
+Personal portfolio for **Nathan Kim** — built with Next.js 16, Tailwind v4, and TypeScript.
 
-First, run the development server:
+## Stack
+
+- [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- Hosted on [Vercel](https://vercel.com/)
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── layout.tsx              # Root layout, fonts, metadata
+│   ├── page.tsx                # Single-page composition
+│   ├── globals.css             # Theme tokens & Tailwind v4 setup
+│   └── projects/[slug]/        # Per-project detail pages
+├── components/
+│   ├── Nav.tsx                 # Sticky top navigation
+│   ├── Hero.tsx                # Landing intro
+│   ├── About.tsx               # About section
+│   ├── Experience.tsx          # Work history timeline
+│   ├── Skills.tsx              # Categorized stack chips
+│   ├── Projects.tsx            # Filterable project grid
+│   ├── ProjectCard.tsx
+│   ├── Connect.tsx             # Contact links
+│   ├── Footer.tsx
+│   └── SectionHeading.tsx      # Reusable section header
+└── data/
+    ├── profile.ts              # Name, links, intro copy
+    ├── experience.ts           # Work history
+    ├── skills.ts               # Skill groups
+    └── projects.ts             # Projects list
+```
 
-## Learn More
+## How to update content
 
-To learn more about Next.js, take a look at the following resources:
+All content lives in `src/data/*.ts`. To add a new project:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Add an entry to `projects` in `src/data/projects.ts`. The `slug` becomes the URL at `/projects/<slug>`.
+2. New tags are picked up automatically by the filter UI.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To update your story, edit the strings in `src/data/profile.ts` and the copy in `src/components/About.tsx`.
 
-## Deploy on Vercel
+## Theme
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Color tokens live in `src/app/globals.css` under `:root` and the dark-mode `@media` query. The site automatically follows the user's OS preference.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploying
+
+This project is set up to deploy on Vercel:
+
+1. Push the repo to GitHub.
+2. Import it in [Vercel](https://vercel.com/new).
+3. Add a custom domain (e.g. `nakim.dev`) in Project → Settings → Domains.
+
+That's it — every push to `main` ships to production.
