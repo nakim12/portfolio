@@ -10,21 +10,26 @@ export function About() {
       />
       <div className="max-w-2xl space-y-5 text-base leading-relaxed text-foreground/90">
         <p>
-          I&apos;m a software engineer who likes building products end-to-end —
-          from the database schema up through the pixel-pushing on the front-end.
-          My recent work lives at the intersection of AI tooling, developer
-          experience, and product design.
+          I&apos;m a Statistics &amp; Data Science student at UC Santa Barbara,
+          graduating in June 2026 with a Technology Management Certification.
+          I&apos;m drawn to problems where rigorous statistics meets a real
+          product surface — places where the modeling choice and the user
+          experience are the same decision.
         </p>
         <p>
-          Outside of code, I&apos;m drawn to anything where craft compounds: clear
-          writing, precise tools, well-designed systems. I believe the best
-          software feels inevitable in retrospect, and I&apos;m always trying to
-          get a little closer to that bar.
+          Right now I&apos;m a data science intern at BlueAlpha, building
+          synthetic data generators and benchmarking workflows for Marketing
+          Mix Modeling. Before that I spent eight months at NCEAS designing
+          reproducible R pipelines for biodiversity data. On the side, I build
+          agentic AI projects — most recently Romus, a real-time computer-vision
+          form coach (BroncoHacks 2026 winner), and Dialed, a multi-agent
+          guardrail layer for social media (2x BeachHacks 9.0 winner).
         </p>
-        <p className="text-muted">
-          Replace this copy with your own story — where you&apos;ve worked, what
-          you&apos;re into, what you&apos;re looking to do next. Two or three
-          short paragraphs is the sweet spot.
+        <p>
+          Outside of code, I&apos;m drawn to anything where craft compounds —
+          clear writing, precise tools, well-designed systems. The best
+          software feels inevitable in retrospect, and I&apos;m always trying
+          to get a little closer to that bar.
         </p>
       </div>
     </section>

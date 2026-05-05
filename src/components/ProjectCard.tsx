@@ -30,6 +30,12 @@ export function ProjectCard({ project }: { project: Project }) {
         {project.description}
       </p>
 
+      {project.award ? (
+        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
+          ★ {project.award}
+        </p>
+      ) : null}
+
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-accent-soft px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
           {statusLabel}

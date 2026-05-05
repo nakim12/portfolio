@@ -53,6 +53,11 @@ export default async function ProjectPage({ params }: { params: Params }) {
           <p className="mt-3 text-lg leading-relaxed text-muted">
             {project.tagline}
           </p>
+          {project.award ? (
+            <p className="mt-4 inline-flex rounded-full bg-accent-soft px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
+              ★ {project.award}
+            </p>
+          ) : null}
         </header>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">

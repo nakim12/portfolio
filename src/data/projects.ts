@@ -10,31 +10,66 @@ export type Project = {
   url?: string;
   repo?: string;
   cover?: string;
+  award?: string;
 };
 
 export const projects: Project[] = [
   {
-    slug: "vela",
-    title: "Vela",
-    tagline: "An AI-native interface for getting things done.",
+    slug: "romus",
+    title: "Romus",
+    tagline: "Real-time computer-vision coach for weightlifting form.",
     description:
-      "Vela is a conversational productivity surface where agents and structured tools work together. Built end-to-end: typed APIs, websocket sessions, and a Next.js client.",
+      "A real-time pose-tracking system that grades weightlifting form on the fly and gives personalized voice cues mid-set. BroncoHacks 2026 winner.",
     longDescription:
-      "Vela explores what a personal computing surface looks like when language models are first-class. The core architecture is a FastAPI back-end with websocket-streamed agent sessions, a Next.js front-end with optimistic UI, and a shared TypeScript / Pydantic schema layer that keeps both ends honest. The current focus is making agent loops feel responsive, predictable, and worth trusting.",
-    year: "2025",
-    status: "in-progress",
-    tags: ["TypeScript", "Next.js", "FastAPI", "Python", "AI", "WebSockets"],
+      "Romus uses MediaPipe to extract 33-point pose landmarks at ~30 FPS from live video, then runs a deterministic biomechanics rules engine to flag form breakdowns. On top of that I built a multi-loop agentic system on Claude Sonnet — with RAG over a curated knowledge base and per-user memory — that generates personalized voice cues during a set and full post-set reports. The backend is FastAPI streaming over WebSockets for low latency, with the Backboard SDK wiring it together.",
+    year: "2026",
+    status: "live",
+    award: "BroncoHacks 2026 Winner",
+    tags: [
+      "Python",
+      "FastAPI",
+      "MediaPipe",
+      "WebSockets",
+      "Claude",
+      "RAG",
+      "Computer Vision",
+      "AI",
+    ],
     url: "https://romus.vercel.app",
   },
   {
-    slug: "example-project",
-    title: "Example Project",
-    tagline: "One-line description of what it does and who it's for.",
+    slug: "dialed",
+    title: "Dialed",
+    tagline: "AI guardrails against manipulative social-media content, in real time.",
     description:
-      "A short paragraph about this project — what problem it solves, what makes it interesting, what you learned building it. Replace this card with a real project of yours.",
-    year: "2024",
+      "A multi-agent system that watches your social feeds and intervenes when it detects manipulative patterns. 2x BeachHacks 9.0 winner.",
+    longDescription:
+      "Dialed monitors social feeds via browser automation, capturing content and interaction signals, and classifies manipulative patterns through a multi-agent LLM pipeline. The architecture is a distributed network of Fetch.ai uAgents handling classification, session-state tracking, and adaptive intervention logic — dynamically filtering and modifying the feed as it loads. Voice responses are generated through ElevenLabs, with Supabase backing the session and user state.",
+    year: "2026",
     status: "live",
-    tags: ["TypeScript", "React"],
+    award: "2x BeachHacks 9.0 Winner",
+    tags: [
+      "Python",
+      "FastAPI",
+      "Fetch.ai",
+      "Supabase",
+      "WebSockets",
+      "Browser-use",
+      "ElevenLabs",
+      "AI",
+    ],
+  },
+  {
+    slug: "investment-performance-tracker",
+    title: "Investment Performance Tracker",
+    tagline: "ARIMA-based forecasting and risk dashboard for portfolios in R Shiny.",
+    description:
+      "A customizable time-series forecasting pipeline with conservative and aggressive modes, plus an interactive Shiny dashboard for risk and return analysis.",
+    longDescription:
+      "Built in R/Shiny, this project automates the full pipeline from data ingestion through return analysis, risk metrics, and multi-dimensional visualization. The forecasting layer is an ARIMA pipeline with two configurable modes — conservative and aggressive — and side-by-side accuracy comparison via RMSE, MAE, and MAPE. The dashboard surfaces volatility, correlations, and cumulative returns for any selected portfolio.",
+    year: "2025",
+    status: "live",
+    tags: ["R", "Shiny", "ARIMA", "Time Series", "Finance"],
   },
 ];
 

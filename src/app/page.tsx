@@ -1,5 +1,6 @@
 import { About } from "@/components/About";
 import { Connect } from "@/components/Connect";
+import { Education } from "@/components/Education";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
@@ -15,6 +16,8 @@ export default function Home() {
         <Hero />
         <div className="h-px w-full bg-subtle" />
         <About />
+        <div className="h-px w-full bg-subtle" />
+        <Education />
         <div className="h-px w-full bg-subtle" />
         <Experience />
         <div className="h-px w-full bg-subtle" />

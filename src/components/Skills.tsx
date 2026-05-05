@@ -5,7 +5,7 @@ export function Skills() {
   return (
     <section id="skills" className="py-24">
       <SectionHeading
-        index="/03"
+        index="/04"
         label="Skills & Tools"
         title="Stack I reach for"
         description="What I tend to build with day-to-day. Comfortable picking up new tools as the problem demands."
