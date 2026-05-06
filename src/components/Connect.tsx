@@ -1,4 +1,5 @@
 import { profile } from "@/data/profile";
+import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 const linkClass =
@@ -25,7 +26,7 @@ export function Connect() {
         description="Best way to reach me is over email. I'm also on GitHub and LinkedIn."
       />
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <Reveal className="grid gap-3 sm:grid-cols-2">
         <a href={`mailto:${profile.email}`} className={linkClass}>
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
@@ -87,7 +88,7 @@ export function Connect() {
             </span>
           </a>
         ) : null}
-      </div>
+      </Reveal>
     </section>
   );
 }

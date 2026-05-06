@@ -1,14 +1,17 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
-import { projects, allTags } from "@/data/projects";
+import { allTags, projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
+import { staggerContainer, staggerItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 const ALL = "All";
 
 export function Projects() {
   const [active, setActive] = useState<string>(ALL);
+  const reduce = useReducedMotion();
 
   const filters = useMemo(() => [ALL, ...allTags], []);
 
@@ -47,11 +50,30 @@ export function Projects() {
         })}
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        {filtered.map((p) => (
-          <ProjectCard key={p.slug} project={p} />
-        ))}
-      </div>
+      <motion.div
+        layout
+        variants={reduce ? undefined : staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+        className="grid gap-5 sm:grid-cols-2"
+      >
+        <AnimatePresence mode="popLayout">
+          {filtered.map((p) => (
+            <motion.div
+              key={p.slug}
+              layout
+              variants={reduce ? undefined : staggerItem}
+              initial={reduce ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? undefined : { opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ProjectCard project={p} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
       {filtered.length === 0 ? (
         <p className="mt-8 text-sm text-muted">

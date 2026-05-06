@@ -4,10 +4,11 @@ Personal portfolio for **Nathan Kim** — built with Next.js 16, Tailwind v4, an
 
 ## Stack
 
-- [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
-- [Tailwind CSS v4](https://tailwindcss.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- Hosted on [Vercel](https://vercel.com/)
+- [Next.js 16](https://nextjs.org/) (App Router, Turbopack) for instant HMR in dev and optimized production builds
+- [TypeScript](https://www.typescriptlang.org/) end to end
+- [Tailwind CSS v4](https://tailwindcss.com/) for the responsive design system
+- [Motion](https://motion.dev/) (formerly Framer Motion) for tasteful scroll-triggered animations and page micro-interactions
+- Deployed on [Vercel](https://vercel.com/) with automatic CI/CD from GitHub
 
 ## Local development
 
@@ -29,18 +30,21 @@ src/
 │   └── projects/[slug]/        # Per-project detail pages
 ├── components/
 │   ├── Nav.tsx                 # Sticky top navigation
-│   ├── Hero.tsx                # Landing intro
+│   ├── Hero.tsx                # Landing intro (Motion staggered entrance)
 │   ├── About.tsx               # About section
+│   ├── Education.tsx           # School + coursework + certifications
 │   ├── Experience.tsx          # Work history timeline
 │   ├── Skills.tsx              # Categorized stack chips
-│   ├── Projects.tsx            # Filterable project grid
+│   ├── Projects.tsx            # Filterable project grid w/ layout animation
 │   ├── ProjectCard.tsx
 │   ├── Connect.tsx             # Contact links
 │   ├── Footer.tsx
+│   ├── Reveal.tsx              # Reusable Motion fade-up + stagger primitives
 │   └── SectionHeading.tsx      # Reusable section header
 └── data/
     ├── profile.ts              # Name, links, intro copy
     ├── experience.ts           # Work history
+    ├── education.ts            # School + certifications
     ├── skills.ts               # Skill groups
     └── projects.ts             # Projects list
 ```

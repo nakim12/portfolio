@@ -1,7 +1,13 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import { skills } from "@/data/skills";
+import { staggerContainer, staggerItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 export function Skills() {
+  const reduce = useReducedMotion();
+
   return (
     <section id="skills" className="py-24">
       <SectionHeading
@@ -10,9 +16,18 @@ export function Skills() {
         title="Stack I reach for"
         description="What I tend to build with day-to-day. Comfortable picking up new tools as the problem demands."
       />
-      <div className="grid gap-8 sm:grid-cols-2">
+      <motion.div
+        variants={reduce ? undefined : staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+        className="grid gap-8 sm:grid-cols-2"
+      >
         {skills.map((group) => (
-          <div key={group.label}>
+          <motion.div
+            key={group.label}
+            variants={reduce ? undefined : staggerItem}
+          >
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">
               {group.label}
             </p>
@@ -26,9 +41,9 @@ export function Skills() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

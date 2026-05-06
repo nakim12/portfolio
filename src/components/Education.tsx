@@ -1,4 +1,5 @@
 import { certifications, education } from "@/data/education";
+import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 export function Education() {
@@ -12,7 +13,7 @@ export function Education() {
 
       <div className="space-y-10">
         {education.map((e) => (
-          <div key={e.school}>
+          <Reveal key={e.school}>
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <div>
                 <h3 className="text-lg font-medium tracking-tight">
@@ -46,11 +47,11 @@ export function Education() {
                 </ul>
               </div>
             ) : null}
-          </div>
+          </Reveal>
         ))}
 
         {certifications.length ? (
-          <div>
+          <Reveal delay={0.05}>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
               Certifications
             </p>
@@ -72,7 +73,7 @@ export function Education() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         ) : null}
       </div>
     </section>

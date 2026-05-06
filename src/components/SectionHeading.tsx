@@ -1,3 +1,5 @@
+import { Reveal } from "./Reveal";
+
 type Props = {
   index: string;
   label: string;
@@ -7,7 +9,7 @@ type Props = {
 
 export function SectionHeading({ index, label, title, description }: Props) {
   return (
-    <div className="mb-12">
+    <Reveal className="mb-12">
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">
         <span className="text-accent">{index}</span> &nbsp;·&nbsp; {label}
       </p>
@@ -19,6 +21,6 @@ export function SectionHeading({ index, label, title, description }: Props) {
           {description}
         </p>
       ) : null}
-    </div>
+    </Reveal>
   );
 }
