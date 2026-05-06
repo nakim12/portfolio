@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 
 const links = [
   { href: "#about", label: "About" },
-  { href: "#education", label: "Education" },
   { href: "#experience", label: "Experience" },
-  { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
   { href: "#connect", label: "Connect" },
 ];
@@ -22,34 +20,36 @@ export function Nav() {
   }, []);
 
   return (
-    <header
-      className={[
-        "sticky top-0 z-40 w-full transition-all",
-        scrolled
-          ? "border-b border-subtle/70 bg-background/80 backdrop-blur"
-          : "border-b border-transparent",
-      ].join(" ")}
-    >
-      <nav className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-6">
-        <a
-          href="#top"
-          className="font-mono text-sm tracking-tight hover:text-accent"
+    <header className="sticky top-0 z-40 w-full">
+      <div className="mx-auto w-full max-w-3xl px-6">
+        <nav
+          className={[
+            "flex items-center justify-between transition-all duration-300 ease-out",
+            scrolled
+              ? "mt-3 h-12 rounded-full border border-subtle/70 bg-background/80 px-5 shadow-sm backdrop-blur"
+              : "h-16 px-0",
+          ].join(" ")}
         >
-          nakim<span className="text-accent">.dev</span>
-        </a>
-        <ul className="hidden items-center gap-7 text-sm text-muted sm:flex">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="transition-colors hover:text-foreground"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+          <a
+            href="#top"
+            className="font-mono text-sm tracking-tight transition-colors hover:text-accent"
+          >
+            nakim<span className="text-accent">.dev</span>
+          </a>
+          <ul className="hidden items-center gap-7 text-sm text-muted sm:flex">
+            {links.map((l) => (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }

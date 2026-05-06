@@ -29,12 +29,10 @@ src/
 │   ├── globals.css             # Theme tokens & Tailwind v4 setup
 │   └── projects/[slug]/        # Per-project detail pages
 ├── components/
-│   ├── Nav.tsx                 # Sticky top navigation
+│   ├── Nav.tsx                 # Sticky pill nav (compresses on scroll)
 │   ├── Hero.tsx                # Landing intro (Motion staggered entrance)
 │   ├── About.tsx               # About section
-│   ├── Education.tsx           # School + coursework + certifications
 │   ├── Experience.tsx          # Work history timeline
-│   ├── Skills.tsx              # Categorized stack chips
 │   ├── Projects.tsx            # Filterable project grid w/ layout animation
 │   ├── ProjectCard.tsx
 │   ├── Connect.tsx             # Contact links
@@ -44,8 +42,6 @@ src/
 └── data/
     ├── profile.ts              # Name, links, intro copy
     ├── experience.ts           # Work history
-    ├── education.ts            # School + certifications
-    ├── skills.ts               # Skill groups
     └── projects.ts             # Projects list
 ```
 

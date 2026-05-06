@@ -20,7 +20,7 @@ export function Connect() {
   return (
     <section id="connect" className="py-24">
       <SectionHeading
-        index="/06"
+        index="/04"
         label="Connect"
         title="Let's get in touch"
         description="Best way to reach me is over email. I'm also on GitHub and LinkedIn."
