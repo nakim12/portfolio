@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light dark;
+
   --background: #fafaf7;
   --surface: #ffffff;
   --foreground: #18181b;
@@ -10,8 +12,11 @@
   --accent-soft: #ccfbf1;
 }
 
+/* Follow the OS by default — but only when the user hasn't explicitly
+   chosen a theme via the toggle. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --background: #0a0a0b;
     --surface: #131316;
     --foreground: #fafaf7;
@@ -20,6 +25,22 @@
     --accent: #2dd4bf;
     --accent-soft: #134e4a;
   }
+}
+
+/* Explicit override when the user has picked a theme. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0a0a0b;
+  --surface: #131316;
+  --foreground: #fafaf7;
+  --muted: #a1a1aa;
+  --subtle: #27272a;
+  --accent: #2dd4bf;
+  --accent-soft: #134e4a;
 }
 
 @theme inline {

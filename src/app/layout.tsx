@@ -35,6 +35,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Runs before React hydrates so the chosen theme is applied before
+// first paint, avoiding a flash of the wrong theme.
+const themeInitScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(_){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,7 +48,11 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${sans.variable} ${mono.variable} h-full antialiased scroll-smooth`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
