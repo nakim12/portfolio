@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
 import { allTags, projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
-import { staggerContainer, staggerItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 const ALL = "All";
@@ -26,10 +25,10 @@ export function Projects() {
         index="/03"
         label="Projects"
         title="Things I've built"
-        description="A handful of products and experiments. Click any card for the longer story."
+        description="A handful of products and experiments. Click any project for the longer story."
       />
 
-      <div className="mb-8 flex flex-wrap gap-2">
+      <div className="mb-12 flex flex-wrap gap-2">
         {filters.map((tag) => {
           const isActive = active === tag;
           return (
@@ -50,26 +49,16 @@ export function Projects() {
         })}
       </div>
 
-      <motion.div
-        layout
-        variants={reduce ? undefined : staggerContainer}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-        className="grid gap-5 sm:grid-cols-2"
-      >
+      <motion.div layout className="flex flex-col gap-12">
         <AnimatePresence mode="popLayout">
-          {filtered.map((p) => (
+          {filtered.map((p, i) => (
             <motion.div
               key={p.slug}
               layout
-              variants={reduce ? undefined : staggerItem}
-              initial={reduce ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
               exit={reduce ? undefined : { opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              <ProjectCard project={p} />
+              <ProjectCard project={p} index={i} />
             </motion.div>
           ))}
         </AnimatePresence>

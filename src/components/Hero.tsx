@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
-import { HeroFacts } from "./HeroFacts";
 import { staggerContainer, staggerItem } from "./Reveal";
 
 const wins = projects.filter((p) => p.award);
@@ -15,7 +14,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[70vh] flex-col justify-center pt-20 pb-24"
+      className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center pt-16 pb-24"
     >
       <motion.div
         variants={reduce ? undefined : staggerContainer}
@@ -24,19 +23,19 @@ export function Hero() {
       >
         <motion.p
           variants={reduce ? undefined : staggerItem}
-          className="font-mono text-xs uppercase tracking-[0.18em] text-muted"
+          className="font-mono text-xs uppercase tracking-[0.22em] text-muted"
         >
           Hi, I&apos;m
         </motion.p>
         <motion.h1
           variants={reduce ? undefined : staggerItem}
-          className="mt-3 text-5xl font-semibold tracking-tight sm:text-6xl"
+          className="mt-4 text-[clamp(3rem,12vw,6.5rem)] font-bold tracking-[-0.04em] leading-[0.95]"
         >
-          {profile.name}.
+          Nathan Kim<span className="text-accent">.</span>
         </motion.h1>
         <motion.p
           variants={reduce ? undefined : staggerItem}
-          className="mt-4 max-w-xl text-lg leading-relaxed text-muted"
+          className="mt-6 max-w-xl text-lg leading-relaxed text-muted"
         >
           {profile.intro}
         </motion.p>
@@ -63,7 +62,7 @@ export function Hero() {
         >
           <a
             href="#projects"
-            className="inline-flex h-10 items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             See my work
           </a>
@@ -71,20 +70,18 @@ export function Hero() {
             href={profile.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-10 items-center justify-center rounded-full border border-subtle px-5 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-subtle px-6 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
           >
             View resume ↗
           </a>
           <a
             href="#connect"
-            className="inline-flex h-10 items-center justify-center rounded-full px-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+            className="inline-flex h-11 items-center justify-center rounded-full px-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
           >
             Get in touch →
           </a>
         </motion.div>
       </motion.div>
-
-      <HeroFacts />
     </section>
   );
 }

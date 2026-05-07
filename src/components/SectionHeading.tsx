@@ -13,11 +13,11 @@ export function SectionHeading({ index, label, title, description }: Props) {
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">
         <span className="text-accent">{index}</span> &nbsp;·&nbsp; {label}
       </p>
-      <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h2 className="mt-4 text-4xl font-bold tracking-[-0.03em] leading-[1.05] sm:text-5xl">
         {title}
       </h2>
       {description ? (
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted">
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
           {description}
         </p>
       ) : null}
