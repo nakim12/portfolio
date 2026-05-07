@@ -62,22 +62,6 @@ export function Footer() {
               <circle cx="4" cy="4" r="2" />
             </svg>
           </a>
-          <a
-            href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Resume PDF"
-            title="Resume"
-            className={iconClass}
-          >
-            <svg {...iconSvgProps}>
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <path d="M14 2v6h6" />
-              <path d="M16 13H8" />
-              <path d="M16 17H8" />
-              <path d="M10 9H8" />
-            </svg>
-          </a>
         </div>
 
         <p className="font-mono">

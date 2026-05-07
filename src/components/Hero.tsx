@@ -1,25 +1,67 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
-import Link from "next/link";
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+} from "motion/react";
 import { profile } from "@/data/profile";
-import { projects } from "@/data/projects";
 import { staggerContainer, staggerItem } from "./Reveal";
 
-const wins = projects.filter((p) => p.award);
+const NAME = "Nathan Kim";
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const charContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } },
+};
+const charItem = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease },
+  },
+};
 
 export function Hero() {
   const reduce = useReducedMotion();
 
+  // Cursor-following spotlight. Values are 0-100 and consumed by a
+  // motion-template radial gradient so we never re-render React on mousemove.
+  const mx = useMotionValue(50);
+  const my = useMotionValue(50);
+  const spotlight = useMotionTemplate`radial-gradient(circle 520px at ${mx}% ${my}%, var(--accent-soft), transparent 70%)`;
+
   return (
     <section
       id="top"
-      className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center pt-16 pb-24"
+      onMouseMove={(e) => {
+        if (reduce) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        mx.set(((e.clientX - r.left) / r.width) * 100);
+        my.set(((e.clientY - r.top) / r.height) * 100);
+      }}
+      className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center overflow-hidden pt-16 pb-24"
     >
+      <div
+        aria-hidden
+        className="bg-dot-grid pointer-events-none absolute inset-0 opacity-70"
+      />
+      {!reduce ? (
+        <motion.div
+          aria-hidden
+          style={{ background: spotlight }}
+          className="pointer-events-none absolute inset-0 opacity-80 mix-blend-normal"
+        />
+      ) : null}
+
       <motion.div
         variants={reduce ? undefined : staggerContainer}
         initial="hidden"
         animate="show"
+        className="relative"
       >
         <motion.p
           variants={reduce ? undefined : staggerItem}
@@ -27,35 +69,38 @@ export function Hero() {
         >
           Hi, I&apos;m
         </motion.p>
+
         <motion.h1
-          variants={reduce ? undefined : staggerItem}
+          variants={reduce ? undefined : charContainer}
           className="mt-4 text-[clamp(3rem,12vw,6.5rem)] font-bold tracking-[-0.04em] leading-[0.95]"
+          aria-label={NAME}
         >
-          Nathan Kim<span className="text-accent">.</span>
+          {NAME.split("").map((c, i) => (
+            <motion.span
+              key={i}
+              variants={reduce ? undefined : charItem}
+              className="inline-block"
+              aria-hidden
+            >
+              {c === " " ? "\u00A0" : c}
+            </motion.span>
+          ))}
+          <motion.span
+            variants={reduce ? undefined : charItem}
+            className="inline-block text-accent"
+            aria-hidden
+          >
+            .
+          </motion.span>
         </motion.h1>
+
         <motion.p
           variants={reduce ? undefined : staggerItem}
           className="mt-6 max-w-xl text-lg leading-relaxed text-muted"
         >
           {profile.intro}
         </motion.p>
-        {wins.length ? (
-          <motion.div
-            variants={reduce ? undefined : staggerItem}
-            className="mt-6 flex flex-wrap items-center gap-2"
-          >
-            {wins.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/projects/${p.slug}`}
-                className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-accent transition-opacity hover:opacity-80"
-              >
-                <span aria-hidden>★</span>
-                {p.award}
-              </Link>
-            ))}
-          </motion.div>
-        ) : null}
+
         <motion.div
           variants={reduce ? undefined : staggerItem}
           className="mt-8 flex flex-wrap items-center gap-3"
@@ -67,16 +112,8 @@ export function Hero() {
             See my work
           </a>
           <a
-            href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-subtle px-6 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
-          >
-            View resume ↗
-          </a>
-          <a
             href="#connect"
-            className="inline-flex h-11 items-center justify-center rounded-full px-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-subtle px-6 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
           >
             Get in touch →
           </a>

@@ -23,10 +23,9 @@ export function About() {
             synthetic data generators and benchmarking workflows for Marketing
             Mix Modeling. Before that I spent eight months at NCEAS designing
             reproducible pipelines for biodiversity data. On the side, I build
-            agentic AI projects, most recently Romus, a real time computer
-            vision form coach (BroncoHacks 2026 winner), and Dialed, a
-            multi-agent guardrail layer for social media (2x BeachHacks 9.0
-            winner).
+            agentic AI projects, most recently Romus, a real-time computer
+            vision form coach, and Dialed, a multi-agent guardrail layer for
+            social media.
           </p>
           <p>
             Outside of code, you will find me reading books, going on runs,

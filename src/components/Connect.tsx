@@ -70,24 +70,6 @@ export function Connect() {
             ↗
           </span>
         </a>
-        {profile.resumeUrl ? (
-          <a
-            href={profile.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass}
-          >
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                Resume
-              </p>
-              <p className="mt-1 text-sm">resume.pdf</p>
-            </div>
-            <span aria-hidden className="text-muted group-hover:text-accent">
-              ↗
-            </span>
-          </a>
-        ) : null}
       </Reveal>
     </section>
   );
