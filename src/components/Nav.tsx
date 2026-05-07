@@ -23,30 +23,20 @@ export function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-40">
       <div
-        // The bar is rendered with a background, blur, and border at all
-        // times. On scroll we sequence the transition so width shrinks
-        // first, then border-radius rounds the corners with a delay,
-        // mirroring the romus.vercel.app pattern for a smoother handoff
-        // from full-width bar to pill.
-        className="mx-auto border border-subtle bg-background/70 backdrop-blur-xl"
+        // The bar exists at scroll=0 (bg/blur/border are always present),
+        // it's just full-width and rectangular. On scroll, width and
+        // border-radius animate together over the same duration so the
+        // shape morphs continuously from bar to pill — no intermediate
+        // "small rectangle" state.
+        className={[
+          "mx-auto border border-subtle bg-background/70 backdrop-blur-xl",
+          "transition-[width,border-radius,margin-top,box-shadow] duration-500 ease-out",
+          scrolled
+            ? "mt-3 rounded-full shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]"
+            : "mt-0 rounded-none shadow-none",
+        ].join(" ")}
         style={{
-          transitionProperty:
-            "width, border-radius, margin-top, box-shadow, border-color",
-          transitionDuration: "700ms, 180ms, 700ms, 700ms, 700ms",
-          // Asymmetric delays: scrolling DOWN, the corners round only after
-          // the bar has mostly shrunk (520ms delay). Scrolling UP, the
-          // corners flatten immediately while the bar expands in parallel,
-          // so we don't see a fully-expanded-but-still-rounded mid state.
-          transitionDelay: scrolled
-            ? "0ms, 520ms, 0ms, 0ms, 0ms"
-            : "0ms, 0ms, 0ms, 0ms, 0ms",
-          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
           width: scrolled ? "min(calc(100% - 2rem), 768px)" : "100%",
-          borderRadius: scrolled ? "9999px" : "0",
-          marginTop: scrolled ? "0.75rem" : "0",
-          boxShadow: scrolled
-            ? "0 8px 24px -12px rgba(0,0,0,0.18)"
-            : "none",
         }}
       >
         <nav className="mx-auto flex h-14 max-w-3xl items-center justify-between gap-3 px-4 sm:px-6">
