@@ -36,6 +36,7 @@ export const projects: Project[] = [
       "AI",
     ],
     url: "https://romus.vercel.app",
+    cover: "/projects/romus.png",
   },
   {
     slug: "dialed",
@@ -58,6 +59,7 @@ export const projects: Project[] = [
       "ElevenLabs",
       "AI",
     ],
+    cover: "/projects/dialed.png",
   },
   {
     slug: "investment-performance-tracker",

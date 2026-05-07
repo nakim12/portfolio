@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/Footer";
@@ -60,7 +61,20 @@ export default async function ProjectPage({ params }: { params: Params }) {
           ) : null}
         </header>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2">
+        {project.cover ? (
+          <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-subtle bg-subtle/30">
+            <Image
+              src={project.cover}
+              alt={`${project.title} preview`}
+              fill
+              sizes="(min-width: 768px) 768px, 100vw"
+              priority
+              className="object-cover"
+            />
+          </div>
+        ) : null}
+
+        <div className="mt-8 flex flex-wrap items-center gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
