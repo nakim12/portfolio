@@ -70,30 +70,3 @@ body {
   background: var(--accent-soft);
   color: var(--foreground);
 }
-
-/* Horizontal infinite-scroll marquee. Content is duplicated in markup
-   so a 50% translate creates a seamless loop. */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-track {
-  animation: marquee 32s linear infinite;
-  will-change: transform;
-}
-
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-    transform: translateX(0);
-  }
-}
