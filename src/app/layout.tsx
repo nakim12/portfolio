@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const sans = Inter({
@@ -12,18 +13,25 @@ const mono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const title = "Nathan Kim — Statistics & Data Science · UCSB";
+const description =
+  "Statistics & Data Science student at UC Santa Barbara, graduating June 2026. Data science intern at BlueAlpha. Building with data, statistics, and AI.";
+
 export const metadata: Metadata = {
-  title: "Nathan Kim — Builder & Engineer",
-  description:
-    "Personal portfolio of Nathan Kim. Engineer building products at the intersection of AI, design, and software.",
-  metadataBase: new URL("https://nakim.dev"),
+  title,
+  description,
+  metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "Nathan Kim — Builder & Engineer",
-    description:
-      "Personal portfolio of Nathan Kim. Engineer building products at the intersection of AI, design, and software.",
-    url: "https://nakim.dev",
-    siteName: "nakim.dev",
+    title,
+    description,
+    url: SITE_URL,
+    siteName: "Nathan Kim",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
   },
 };
 

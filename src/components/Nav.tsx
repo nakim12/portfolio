@@ -21,12 +21,12 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 w-full">
-      <div className="mx-auto w-full max-w-3xl px-6">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <nav
           className={[
-            "flex items-center justify-between transition-all duration-300 ease-out",
+            "flex items-center justify-between gap-3 transition-all duration-300 ease-out",
             scrolled
-              ? "mt-3 h-12 rounded-full border border-subtle/70 bg-background/80 px-5 shadow-sm backdrop-blur"
+              ? "mt-3 h-12 rounded-full border border-subtle/70 bg-background/80 px-4 shadow-sm backdrop-blur sm:px-5"
               : "h-16 px-0",
           ].join(" ")}
         >
@@ -34,9 +34,9 @@ export function Nav() {
             href="#top"
             className="font-mono text-sm tracking-tight transition-colors hover:text-accent"
           >
-            nakim<span className="text-accent">.dev</span>
+            nakim<span className="text-accent">.</span>
           </a>
-          <ul className="hidden items-center gap-7 text-sm text-muted sm:flex">
+          <ul className="flex items-center gap-4 text-xs text-muted sm:gap-7 sm:text-sm">
             {links.map((l) => (
               <li key={l.href}>
                 <a

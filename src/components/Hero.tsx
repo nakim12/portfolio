@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/data/profile";
+import { HeroFacts } from "./HeroFacts";
 import { staggerContainer, staggerItem } from "./Reveal";
 
 export function Hero() {
@@ -46,13 +47,23 @@ export function Hero() {
             See my work
           </a>
           <a
-            href="#connect"
+            href={profile.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex h-10 items-center justify-center rounded-full border border-subtle px-5 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
           >
-            Get in touch
+            View resume ↗
+          </a>
+          <a
+            href="#connect"
+            className="inline-flex h-10 items-center justify-center rounded-full px-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+          >
+            Get in touch →
           </a>
         </motion.div>
       </motion.div>
+
+      <HeroFacts />
     </section>
   );
 }
