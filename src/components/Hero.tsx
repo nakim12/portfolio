@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-} from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { profile } from "@/data/profile";
+import { FlowField } from "./FlowField";
 import { staggerContainer, staggerItem } from "./Reveal";
 
 const NAME = "Nathan Kim";
@@ -28,34 +24,12 @@ const charItem = {
 export function Hero() {
   const reduce = useReducedMotion();
 
-  // Cursor-following spotlight. Stored as motion values + a motion-template
-  // gradient string so we never re-render React on mousemove.
-  const mx = useMotionValue(50);
-  const my = useMotionValue(50);
-  const spotlight = useMotionTemplate`radial-gradient(circle 600px at ${mx}% ${my}%, var(--accent-soft), transparent 65%)`;
-
   return (
     <section
       id="top"
-      onMouseMove={(e) => {
-        if (reduce) return;
-        const r = e.currentTarget.getBoundingClientRect();
-        mx.set(((e.clientX - r.left) / r.width) * 100);
-        my.set(((e.clientY - r.top) / r.height) * 100);
-      }}
       className="fixed inset-0 z-0 flex flex-col justify-center overflow-hidden pt-16 pb-24"
     >
-      <div
-        aria-hidden
-        className="bg-dot-grid pointer-events-none absolute inset-0 opacity-70"
-      />
-      {!reduce ? (
-        <motion.div
-          aria-hidden
-          style={{ background: spotlight }}
-          className="pointer-events-none absolute inset-0 opacity-90"
-        />
-      ) : null}
+      <FlowField className="pointer-events-none absolute inset-0 h-full w-full" />
 
       <motion.div
         variants={reduce ? undefined : staggerContainer}

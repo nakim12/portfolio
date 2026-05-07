@@ -70,24 +70,3 @@ body {
   background: var(--accent-soft);
   color: var(--foreground);
 }
-
-/* Subtle dot-grid texture used as a backdrop on the hero. The mask fades
-   the dots out toward the edges so they don't collide with section borders. */
-.bg-dot-grid {
-  background-image: radial-gradient(
-    circle,
-    color-mix(in oklab, var(--muted) 35%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 28px 28px;
-  -webkit-mask-image: radial-gradient(
-    ellipse at center,
-    black 35%,
-    transparent 80%
-  );
-  mask-image: radial-gradient(
-    ellipse at center,
-    black 35%,
-    transparent 80%
-  );
-}
