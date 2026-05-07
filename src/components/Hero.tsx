@@ -28,11 +28,11 @@ const charItem = {
 export function Hero() {
   const reduce = useReducedMotion();
 
-  // Cursor-following spotlight. Values are 0-100 and consumed by a
-  // motion-template radial gradient so we never re-render React on mousemove.
+  // Cursor-following spotlight. Stored as motion values + a motion-template
+  // gradient string so we never re-render React on mousemove.
   const mx = useMotionValue(50);
   const my = useMotionValue(50);
-  const spotlight = useMotionTemplate`radial-gradient(circle 520px at ${mx}% ${my}%, var(--accent-soft), transparent 70%)`;
+  const spotlight = useMotionTemplate`radial-gradient(circle 600px at ${mx}% ${my}%, var(--accent-soft), transparent 65%)`;
 
   return (
     <section
@@ -43,7 +43,7 @@ export function Hero() {
         mx.set(((e.clientX - r.left) / r.width) * 100);
         my.set(((e.clientY - r.top) / r.height) * 100);
       }}
-      className="relative flex min-h-[calc(100svh-4rem)] flex-col justify-center overflow-hidden pt-16 pb-24"
+      className="fixed inset-0 z-0 flex flex-col justify-center overflow-hidden pt-16 pb-24"
     >
       <div
         aria-hidden
@@ -53,7 +53,7 @@ export function Hero() {
         <motion.div
           aria-hidden
           style={{ background: spotlight }}
-          className="pointer-events-none absolute inset-0 opacity-80 mix-blend-normal"
+          className="pointer-events-none absolute inset-0 opacity-90"
         />
       ) : null}
 
@@ -61,7 +61,7 @@ export function Hero() {
         variants={reduce ? undefined : staggerContainer}
         initial="hidden"
         animate="show"
-        className="relative"
+        className="relative mx-auto w-full max-w-3xl px-6"
       >
         <motion.p
           variants={reduce ? undefined : staggerItem}
