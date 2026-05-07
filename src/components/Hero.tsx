@@ -1,9 +1,13 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { profile } from "@/data/profile";
+import { projects } from "@/data/projects";
 import { HeroFacts } from "./HeroFacts";
 import { staggerContainer, staggerItem } from "./Reveal";
+
+const wins = projects.filter((p) => p.award);
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -36,6 +40,23 @@ export function Hero() {
         >
           {profile.intro}
         </motion.p>
+        {wins.length ? (
+          <motion.div
+            variants={reduce ? undefined : staggerItem}
+            className="mt-6 flex flex-wrap items-center gap-2"
+          >
+            {wins.map((p) => (
+              <Link
+                key={p.slug}
+                href={`/projects/${p.slug}`}
+                className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-accent transition-opacity hover:opacity-80"
+              >
+                <span aria-hidden>★</span>
+                {p.award}
+              </Link>
+            ))}
+          </motion.div>
+        ) : null}
         <motion.div
           variants={reduce ? undefined : staggerItem}
           className="mt-8 flex flex-wrap items-center gap-3"
