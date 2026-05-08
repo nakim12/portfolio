@@ -7,6 +7,7 @@ import {
   useTransform,
 } from "motion/react";
 import { profile } from "@/data/profile";
+import { PineRidge } from "./PineRidge";
 import { TopoField } from "./TopoField";
 import { staggerContainer, staggerItem } from "./Reveal";
 
@@ -16,7 +17,11 @@ import { staggerContainer, staggerItem } from "./Reveal";
 const PAPER_GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.7'/></svg>\")";
 
-const NAME = "Nathan Kim";
+// Split so the surname can pick up a literary serif italic — small
+// typographic accent that nods to the "reading books" side of things
+// without going full bookish.
+const FIRST = "Nathan";
+const LAST = "Kim";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const charContainer = {
@@ -48,6 +53,22 @@ export function Hero() {
       className="fixed inset-0 z-0 flex flex-col justify-center overflow-hidden pt-16 pb-24"
     >
       <TopoField className="pointer-events-none absolute inset-0 h-full w-full" />
+
+      {/* Soft warm sky-light from above — fakes morning light filtering
+          through a canopy. Very low opacity so it just nudges the
+          temperature of the page rather than being visible as a glow. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-2/3 opacity-60 dark:opacity-30"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%)",
+        }}
+      />
+
+      {/* Pine silhouette ridge at the bottom of the hero. */}
+      <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[28vh] w-full" />
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
@@ -70,16 +91,33 @@ export function Hero() {
         <motion.h1
           variants={reduce ? undefined : charContainer}
           className="mt-4 text-[clamp(3rem,12vw,6.5rem)] font-bold tracking-[-0.04em] leading-[0.95]"
-          aria-label={NAME}
+          aria-label={`${FIRST} ${LAST}`}
         >
-          {NAME.split("").map((c, i) => (
+          {FIRST.split("").map((c, i) => (
             <motion.span
-              key={i}
+              key={`f-${i}`}
               variants={reduce ? undefined : charItem}
               className="inline-block"
               aria-hidden
             >
-              {c === " " ? "\u00A0" : c}
+              {c}
+            </motion.span>
+          ))}
+          <motion.span
+            variants={reduce ? undefined : charItem}
+            className="inline-block"
+            aria-hidden
+          >
+            {"\u00A0"}
+          </motion.span>
+          {LAST.split("").map((c, i) => (
+            <motion.span
+              key={`l-${i}`}
+              variants={reduce ? undefined : charItem}
+              className="inline-block font-[family-name:var(--font-serif)] font-medium italic"
+              aria-hidden
+            >
+              {c}
             </motion.span>
           ))}
           <motion.span
