@@ -7,6 +7,7 @@ import {
   useTransform,
 } from "motion/react";
 import { profile } from "@/data/profile";
+import { MistField } from "./MistField";
 import { PineRidge } from "./PineRidge";
 import { TopoField } from "./TopoField";
 import { staggerContainer, staggerItem } from "./Reveal";
@@ -54,17 +55,10 @@ export function Hero() {
     >
       <TopoField className="pointer-events-none absolute inset-0 h-full w-full" />
 
-      {/* Soft warm sky-light from above — fakes morning light filtering
-          through a canopy. Very low opacity so it just nudges the
-          temperature of the page rather than being visible as a glow. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-2/3 opacity-60 dark:opacity-30"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%)",
-        }}
-      />
+      {/* Drifting mist along the treeline — WebGL fragment shader. Sits
+          between the topo grid and the pine silhouettes so fog reads as
+          rolling through/behind the trees. */}
+      <MistField className="pointer-events-none absolute inset-0 h-full w-full" />
 
       {/* Pine silhouette ridge at the bottom of the hero. */}
       <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[28vh] w-full" />
