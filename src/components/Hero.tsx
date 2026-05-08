@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "motion/react";
 import { profile } from "@/data/profile";
 import { FlowField } from "./FlowField";
 import { staggerContainer, staggerItem } from "./Reveal";
@@ -23,10 +28,17 @@ const charItem = {
 
 export function Hero() {
   const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  // Fade the entire hero out as the content panel slides up over it.
+  // Fully gone by ~500px scroll (a bit more than half a typical viewport),
+  // so the content "lift" feels cleaner instead of having two layers
+  // sitting at full opacity at the same time.
+  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   return (
-    <section
+    <motion.section
       id="top"
+      style={reduce ? undefined : { opacity }}
       className="fixed inset-0 z-0 flex flex-col justify-center overflow-hidden pt-16 pb-24"
     >
       <FlowField className="pointer-events-none absolute inset-0 h-full w-full" />
@@ -93,6 +105,6 @@ export function Hero() {
           </a>
         </motion.div>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }

@@ -42,7 +42,7 @@ export function FlowField({ className }: { className?: string }) {
     const readAccent = () =>
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent")
-        .trim() || "#0d9488";
+        .trim() || "#166534";
     let accent = readAccent();
     const themeObserver = new MutationObserver(() => {
       accent = readAccent();
@@ -52,7 +52,7 @@ export function FlowField({ className }: { className?: string }) {
       attributeFilter: ["data-theme"],
     });
 
-    const NUM = window.innerWidth < 640 ? 180 : 360;
+    const NUM = window.innerWidth < 640 ? 100 : 200;
     const particles: Particle[] = [];
 
     const spawn = (): Particle => ({

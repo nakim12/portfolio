@@ -8,8 +8,8 @@
   --foreground: #18181b;
   --muted: #71717a;
   --subtle: #e4e4e7;
-  --accent: #0d9488;
-  --accent-soft: #ccfbf1;
+  --accent: #166534;
+  --accent-soft: #dcfce7;
 }
 
 /* Follow the OS by default — but only when the user hasn't explicitly
@@ -22,8 +22,8 @@
     --foreground: #fafaf7;
     --muted: #a1a1aa;
     --subtle: #27272a;
-    --accent: #2dd4bf;
-    --accent-soft: #134e4a;
+    --accent: #4ade80;
+    --accent-soft: #14532d;
   }
 }
 
@@ -39,8 +39,8 @@
   --foreground: #fafaf7;
   --muted: #a1a1aa;
   --subtle: #27272a;
-  --accent: #2dd4bf;
-  --accent-soft: #134e4a;
+  --accent: #4ade80;
+  --accent-soft: #14532d;
 }
 
 @theme inline {
