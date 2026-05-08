@@ -71,17 +71,17 @@ export function FlowField({ className }: { className?: string }) {
     const step = () => {
       t += 1;
 
-      // Gradually fade existing trails by removing a bit of the canvas's
-      // alpha each frame. `destination-out` lets us do this on a
-      // transparent canvas without knowing the page background color.
+      // Aggressive fade so each particle leaves only a short comet-tail
+      // (~10-15px) instead of a long line. Compositing with
+      // `destination-out` lets us do this on a transparent canvas
+      // without needing to know the page background color.
       ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0,0,0,0.05)";
+      ctx.fillStyle = "rgba(0,0,0,0.14)";
       ctx.fillRect(0, 0, w, h);
       ctx.globalCompositeOperation = "source-over";
 
-      ctx.strokeStyle = accent;
-      ctx.lineWidth = 0.6;
-      ctx.globalAlpha = 0.55;
+      ctx.fillStyle = accent;
+      ctx.globalAlpha = 0.75;
 
       for (const p of particles) {
         // Pseudo-noise field: two sine waves at different frequencies
@@ -110,8 +110,6 @@ export function FlowField({ className }: { className?: string }) {
         p.vx *= 0.94;
         p.vy *= 0.94;
 
-        const px = p.x;
-        const py = p.y;
         p.x += p.vx;
         p.y += p.vy;
         p.life -= 1;
@@ -126,10 +124,12 @@ export function FlowField({ className }: { className?: string }) {
           Object.assign(p, spawn());
         }
 
+        // Draw the particle as a small filled circle. Successive frames
+        // overlap into a soft, dotted comet-tail because the canvas
+        // fade above only removes a fraction of the alpha each frame.
         ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
+        ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       ctx.globalAlpha = 1;
