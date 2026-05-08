@@ -2,7 +2,7 @@ export const profile = {
   name: "Nathan Kim",
   handle: "nakim12",
   intro:
-    "Statistics & Data Science student at UC Santa Barbara. I work at the intersection of machine learning, statistics, and product — currently a data science intern at BlueAlpha.",
+    "Studying Statistics & Data Science + Technology Management at UC Santa Barbara.",
   location: "Goleta, CA",
   email: "nathank0306@gmail.com",
   links: {
