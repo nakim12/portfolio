@@ -10,10 +10,10 @@ type Props = {
 export function SectionHeading({ index, label, title, description }: Props) {
   return (
     <Reveal className="mb-12">
-      <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">
-        <span className="text-accent">{index}</span> &nbsp;·&nbsp; {label}
+      <p className="font-[family-name:var(--font-serif)] text-base italic tracking-normal text-muted">
+        <span className="text-accent">{index}.</span> {label}
       </p>
-      <h2 className="mt-4 text-4xl font-bold tracking-[-0.03em] leading-[1.05] sm:text-5xl">
+      <h2 className="mt-3 text-4xl font-bold tracking-[-0.03em] leading-[1.05] sm:text-5xl">
         {title}
       </h2>
       {description ? (

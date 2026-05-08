@@ -11,7 +11,7 @@ export function Experience() {
   return (
     <section id="experience" className="py-24">
       <SectionHeading
-        index="/02"
+        index="II"
         label="Experience"
         title="Where I've worked"
       />

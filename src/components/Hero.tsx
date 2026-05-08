@@ -12,12 +12,6 @@ import { PineRidge } from "./PineRidge";
 import { TopoField } from "./TopoField";
 import { staggerContainer, staggerItem } from "./Reveal";
 
-// Inline SVG noise as a data URI — used as a paper-grain overlay
-// across the hero. ~200x200 fractal noise tile, repeated. Avoids
-// shipping a binary asset for one decorative texture.
-const PAPER_GRAIN =
-  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.7'/></svg>\")";
-
 // Split so the surname can pick up a literary serif italic — small
 // typographic accent that nods to the "reading books" side of things
 // without going full bookish.
@@ -62,12 +56,6 @@ export function Hero() {
 
       {/* Pine silhouette ridge at the bottom of the hero. */}
       <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[28vh] w-full" />
-
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
-        style={{ backgroundImage: PAPER_GRAIN, backgroundRepeat: "repeat" }}
-      />
 
       <motion.div
         variants={reduce ? undefined : staggerContainer}

@@ -22,7 +22,7 @@ export function Projects() {
   return (
     <section id="projects" className="py-24">
       <SectionHeading
-        index="/03"
+        index="III"
         label="Projects"
         title="Things I've built"
         description="A handful of products and experiments. Click any project for the longer story."

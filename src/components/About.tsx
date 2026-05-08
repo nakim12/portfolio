@@ -5,13 +5,13 @@ export function About() {
   return (
     <section id="about" className="py-24">
       <SectionHeading
-        index="/01"
+        index="I"
         label="About"
         title="About me"
       />
       <Reveal>
         <div className="max-w-2xl space-y-5 text-base leading-relaxed text-foreground/90">
-          <p>
+          <p className="drop-cap">
             I&apos;m a Statistics &amp; Data Science student at UC Santa
             Barbara, graduating in June 2026 with a Technology Management
             Certification. I am drawn to transforming complex systems into
