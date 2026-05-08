@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
   { href: "#about", label: "About" },
@@ -46,21 +45,18 @@ export function Nav() {
           >
             nakim<span className="text-accent">.</span>
           </a>
-          <div className="flex items-center gap-3 sm:gap-5">
-            <ul className="flex items-center gap-4 text-xs text-muted sm:gap-7 sm:text-sm">
-              {links.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="transition-colors hover:text-foreground"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <ThemeToggle className="hidden sm:inline-flex" />
-          </div>
+          <ul className="flex items-center gap-4 text-xs text-muted sm:gap-7 sm:text-sm">
+            {links.map((l) => (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
       </div>
     </header>

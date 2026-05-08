@@ -32,19 +32,11 @@ export function TopoField({ className }: { className?: string }) {
     setSize();
     window.addEventListener("resize", setSize);
 
-    // Theme-aware accent (forest green) — refreshed on data-theme flips.
-    const readAccent = () =>
+    // Read accent (forest green) once from CSS. Theme is dark-only.
+    const accent =
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent")
         .trim() || "#4a7c59";
-    let accent = readAccent();
-    const themeObserver = new MutationObserver(() => {
-      accent = readAccent();
-    });
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
 
     // Sample resolution. Smaller cells = smoother contours, more CPU.
     const CELL = window.innerWidth < 640 ? 18 : 14;
@@ -194,7 +186,6 @@ export function TopoField({ className }: { className?: string }) {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", setSize);
       window.removeEventListener("scroll", onScroll);
-      themeObserver.disconnect();
     };
   }, [reduce]);
 

@@ -160,31 +160,8 @@ export function MistField({ className }: { className?: string }) {
     setSize();
     window.addEventListener("resize", setSize);
 
-    // In light mode the fog is *darker* than the off-white background —
-    // a warm gray haze. (Lighter fog over a near-white bg is invisible.)
-    // In dark mode it's a lighter sage that glows over near-black.
-    const lightFog: [number, number, number] = [0.85, 0.81, 0.74];
-    const darkFog: [number, number, number] = [0.7, 0.78, 0.72];
-    const detectDark = () => {
-      const explicit = document.documentElement.getAttribute("data-theme");
-      if (explicit === "dark") return true;
-      if (explicit === "light") return false;
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    };
-    let fog = detectDark() ? darkFog : lightFog;
-
-    const themeObserver = new MutationObserver(() => {
-      fog = detectDark() ? darkFog : lightFog;
-    });
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    const mql = window.matchMedia("(prefers-color-scheme: dark)");
-    const onMqlChange = () => {
-      fog = detectDark() ? darkFog : lightFog;
-    };
-    mql.addEventListener("change", onMqlChange);
+    // Muted sage that reads as luminous mist drifting over near-black.
+    const fog: [number, number, number] = [0.7, 0.78, 0.72];
 
     let raf = 0;
     let running = true;
@@ -219,8 +196,6 @@ export function MistField({ className }: { className?: string }) {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", setSize);
       window.removeEventListener("scroll", onScroll);
-      mql.removeEventListener("change", onMqlChange);
-      themeObserver.disconnect();
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);
