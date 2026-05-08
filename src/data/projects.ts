@@ -35,7 +35,7 @@ export const projects: Project[] = [
       "Computer Vision",
       "AI",
     ],
-    url: "https://romus.vercel.app",
+    url: "https://romus.nakim.me",
     cover: "/projects/romus.png",
   },
   {
