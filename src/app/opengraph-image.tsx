@@ -29,7 +29,7 @@ export default function OpenGraphImage() {
             top: 0,
             bottom: 0,
             width: 8,
-            background: "#22c55e",
+            background: "#16a34a",
             display: "flex",
           }}
         />
@@ -44,7 +44,7 @@ export default function OpenGraphImage() {
           }}
         >
           nakim
-          <span style={{ color: "#22c55e", marginLeft: 2 }}>.</span>
+          <span style={{ color: "#16a34a", marginLeft: 2 }}>.</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -76,7 +76,7 @@ export default function OpenGraphImage() {
           style={{
             display: "flex",
             fontSize: 26,
-            color: "#22c55e",
+            color: "#16a34a",
             letterSpacing: "0.02em",
           }}
         >
