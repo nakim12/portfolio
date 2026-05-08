@@ -22,8 +22,8 @@
     --foreground: #fafaf7;
     --muted: #a1a1aa;
     --subtle: #27272a;
-    --accent: #16a34a;
-    --accent-soft: #14532d;
+    --accent: #4a7c59;
+    --accent-soft: #1c2e21;
   }
 }
 
@@ -39,8 +39,8 @@
   --foreground: #fafaf7;
   --muted: #a1a1aa;
   --subtle: #27272a;
-  --accent: #16a34a;
-  --accent-soft: #14532d;
+  --accent: #4a7c59;
+  --accent-soft: #1c2e21;
 }
 
 @theme inline {
