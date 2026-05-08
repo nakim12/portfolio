@@ -59,6 +59,7 @@ export const projects: Project[] = [
       "ElevenLabs",
       "AI",
     ],
+    url: "https://dialed.mykm.dev",
     cover: "/projects/dialed.png",
   },
   {
