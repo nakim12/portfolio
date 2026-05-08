@@ -85,12 +85,12 @@ export function PineRidge({ className }: { className?: string }) {
       className={className}
     >
       <g className="text-accent" fill="currentColor">
-        <g opacity={0.18}>
+        <g opacity={0.1}>
           {backRow.map((t, i) => (
             <path key={`b-${i}`} d={pinePath(t)} />
           ))}
         </g>
-        <g opacity={0.32}>
+        <g opacity={0.18}>
           {frontRow.map((t, i) => (
             <path key={`f-${i}`} d={pinePath(t)} />
           ))}

@@ -64,17 +64,17 @@ void main() {
   float layer1 = fbm(p * 1.8 + vec2(t, 0.0));
   float layer2 = fbm(p * 3.4 - vec2(t * 0.5, 0.0) + layer1 * 0.6);
   float fog = layer1 * 0.6 + layer2 * 0.4;
-  // Sharper contrast curve so wisps read as defined formations rather
-  // than smooth gradients.
-  fog = smoothstep(0.32, 0.68, fog);
-  fog = pow(fog, 1.3);
+  // Soft contrast curve — wisps still read as formations but the
+  // overall haze is light, not smoggy.
+  fog = smoothstep(0.32, 0.72, fog);
+  fog = pow(fog, 1.1);
 
-  // Lift the band a touch above the pine tops so it isn't occluded.
+  // Band centered just above the pine tops so it isn't occluded.
   float h = uv.y - 0.34;
   float sigma = h > 0.0 ? 0.22 : 0.10;
   float band = exp(-(h * h) / (sigma * sigma));
 
-  float density = fog * band * 0.95;
+  float density = fog * band * 0.55;
 
   gl_FragColor = vec4(u_color, density);
 }
@@ -163,8 +163,8 @@ export function MistField({ className }: { className?: string }) {
     // In light mode the fog is *darker* than the off-white background —
     // a warm gray haze. (Lighter fog over a near-white bg is invisible.)
     // In dark mode it's a lighter sage that glows over near-black.
-    const lightFog: [number, number, number] = [0.78, 0.74, 0.66];
-    const darkFog: [number, number, number] = [0.72, 0.82, 0.74];
+    const lightFog: [number, number, number] = [0.85, 0.81, 0.74];
+    const darkFog: [number, number, number] = [0.7, 0.78, 0.72];
     const detectDark = () => {
       const explicit = document.documentElement.getAttribute("data-theme");
       if (explicit === "dark") return true;
