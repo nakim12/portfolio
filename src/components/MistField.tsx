@@ -61,16 +61,20 @@ void main() {
 
   float t = u_time * 0.04;
 
-  float layer1 = fbm(p * 1.6 + vec2(t, 0.0));
-  float layer2 = fbm(p * 3.0 - vec2(t * 0.5, 0.0) + layer1 * 0.6);
+  float layer1 = fbm(p * 1.8 + vec2(t, 0.0));
+  float layer2 = fbm(p * 3.4 - vec2(t * 0.5, 0.0) + layer1 * 0.6);
   float fog = layer1 * 0.6 + layer2 * 0.4;
-  fog = smoothstep(0.25, 0.75, fog);
+  // Sharper contrast curve so wisps read as defined formations rather
+  // than smooth gradients.
+  fog = smoothstep(0.32, 0.68, fog);
+  fog = pow(fog, 1.3);
 
-  float h = uv.y - 0.28;
+  // Lift the band a touch above the pine tops so it isn't occluded.
+  float h = uv.y - 0.34;
   float sigma = h > 0.0 ? 0.22 : 0.10;
   float band = exp(-(h * h) / (sigma * sigma));
 
-  float density = fog * band * 0.7;
+  float density = fog * band * 0.95;
 
   gl_FragColor = vec4(u_color, density);
 }
@@ -156,10 +160,11 @@ export function MistField({ className }: { className?: string }) {
     setSize();
     window.addEventListener("resize", setSize);
 
-    // Cream over off-white in light mode; muted sage over near-black
-    // in dark mode. Composited via SRC_ALPHA blending.
-    const lightFog: [number, number, number] = [0.98, 0.96, 0.92];
-    const darkFog: [number, number, number] = [0.55, 0.65, 0.58];
+    // In light mode the fog is *darker* than the off-white background —
+    // a warm gray haze. (Lighter fog over a near-white bg is invisible.)
+    // In dark mode it's a lighter sage that glows over near-black.
+    const lightFog: [number, number, number] = [0.78, 0.74, 0.66];
+    const darkFog: [number, number, number] = [0.72, 0.82, 0.74];
     const detectDark = () => {
       const explicit = document.documentElement.getAttribute("data-theme");
       if (explicit === "dark") return true;
