@@ -80,7 +80,7 @@ export default function OpenGraphImage() {
             letterSpacing: "0.02em",
           }}
         >
-          Currently — Data Science Intern @ BlueAlpha
+          Open to roles — Data Science · ML · AI · Analytics
         </div>
       </div>
     ),

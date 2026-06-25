@@ -23,7 +23,7 @@ const serif = Newsreader({
 
 const title = "Nathan Kim — Statistics & Data Science · UCSB";
 const description =
-  "Statistics & Data Science student at UC Santa Barbara, graduating June 2026. Data science intern at BlueAlpha. Building with data, statistics, and AI.";
+  "Recent Statistics & Data Science graduate from UC Santa Barbara. Building with data, statistics, and agentic AI. Open to roles in Data Science, ML, AI, and Analytics.";
 
 export const metadata: Metadata = {
   title,

@@ -2,7 +2,7 @@ export const profile = {
   name: "Nathan Kim",
   handle: "nakim12",
   intro:
-    "Studying Statistics & Data Science + Technology Management at UC Santa Barbara.",
+    "Recent Statistics & Data Science + Technology Management graduate from UC Santa Barbara.",
   location: "Goleta, CA",
   email: "nathank0306@gmail.com",
   links: {
@@ -14,13 +14,10 @@ export const profile = {
     education: {
       school: "UC Santa Barbara",
       degree: "B.S. Statistics & Data Science",
-      grad: "Expected Jun 2026",
+      grad: "Jun 2026",
       gpa: "3.6 / 4.0",
     },
     toolkit: ["Python", "R", "SQL", "PyTorch", "Pandas", "FastAPI"],
-    currently: {
-      role: "Data Science Intern",
-      company: "BlueAlpha",
-    },
+    openTo: "Data Science, ML, AI & Analytics roles",
   },
 } as const;

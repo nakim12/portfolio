@@ -13,12 +13,12 @@ export const experience: Experience[] = [
     role: "Data Science Intern",
     location: "San Francisco, CA",
     start: "Jan 2026",
-    end: "Present",
+    end: "Jun 2026",
     bullets: [
-      "Built a synthetic marketing data generator that produces realistic Marketing Mix Modeling (MMM) datasets with configurable ground-truth parameters — ROI, adstock decay, and channel saturation effects.",
-      "Implemented statistical and time-series simulation frameworks that emit weekly marketing data with seasonality, stochastic noise, and realistic channel-level spend patterns across digital ad platforms.",
-      "Stress-tested MMM models against the synthetic datasets, comparing recovered parameters against known ground truth to benchmark attribution accuracy under controlled conditions.",
-      "Designed benchmarking workflows to evaluate how reliably MMM models recover causal channel contributions across simulated marketing environments.",
+      "Built a synthetic MMM data generator with configurable ground-truth ROI, 5 adstock decay curves, and 3 saturation functions, enabling controlled benchmarking against known parameters.",
+      "Engineered time-series simulation pipelines producing weekly multi-channel spend data with seasonality and stochastic noise across 10+ digital ad platforms.",
+      "Quantified MMM reliability by fitting models to synthetic data and measuring how accurately they recovered known parameters, surfacing systematic bias in high-spend channels under short observation windows.",
+      "Designed stress-testing workflows to evaluate attribution model robustness under varied market conditions, identifying failure modes in how models attribute channel contributions.",
     ],
   },
   {
@@ -28,10 +28,10 @@ export const experience: Experience[] = [
     start: "Jul 2025",
     end: "Mar 2026",
     bullets: [
-      "Designed reproducible R-based data pipelines that automated formatting and ingestion of large-scale biodiversity datasets for long-term conservation research.",
-      "Cleaned and standardized 50k+ heterogeneous vegetation records, enabling accurate ecological modeling and seamless integration into VegBank, a national open-access plant community database.",
-      "Performed exploratory data analysis on large-scale vegetation datasets to surface data quality issues, find patterns, and inform downstream spatial analysis and ML modeling.",
-      "Worked with ecological scientists and data managers to align variable formats with metadata standards and prep datasets for predictive modeling, public release, and cross-study comparison.",
+      "Built reproducible R pipelines transforming CDFW Vegcamp vegetation survey data into VegBank loader format, automating field mapping, cleaning, and normalization across 8 entity types (plots, projects, soils, strata, species, etc.).",
+      "Conducted EDA on 50k+ vegetation records to surface data quality issues and patterns informing downstream spatial and ML modeling work.",
+      "Designed a two-stage transform-and-validate architecture with iterative debug loops, enabling reliable ingestion into VegBank, the national open-access plant community research database.",
+      "Partnered with ecologists and data managers to resolve schema conflicts and align variable formats with federal metadata standards for public dataset release.",
     ],
   },
 ];

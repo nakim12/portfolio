@@ -19,12 +19,12 @@ export const projects: Project[] = [
     title: "Romus",
     tagline: "Real-time computer-vision coach for weightlifting form.",
     description:
-      "A real-time pose-tracking system that grades weightlifting form on the fly and gives personalized voice cues mid-set.",
+      "Real-time pose tracking at ~30 FPS with ~200ms feedback latency, paired with a 4-loop agentic AI system delivering personalized voice cues mid-set across 3 compound lifts.",
     longDescription:
-      "Romus uses MediaPipe to extract 33-point pose landmarks at ~30 FPS from live video, then runs a deterministic biomechanics rules engine to flag form breakdowns. On top of that I built a multi-loop agentic system on Claude Sonnet — with RAG over a curated knowledge base and per-user memory — that generates personalized voice cues during a set and full post-set reports. The backend is FastAPI streaming over WebSockets for low latency, with the Backboard SDK wiring it together.",
+      "Romus uses MediaPipe to extract 33-point pose landmarks at ~30 FPS from live video, then runs a deterministic biomechanics rules engine to flag form breakdowns across 3 compound lifts with ~200ms feedback latency. On top of that I built a 4-loop agentic system on Claude Sonnet — with RAG over a curated knowledge base and per-user memory — that generates personalized voice cues during a set and full post-set reports. The backend is FastAPI streaming over WebSockets for low latency, with the Backboard SDK wiring it together.",
     year: "2026",
     status: "live",
-    award: "BroncoHacks 2026 Winner",
+    award: "BroncoHacks 2026 — Best Use of Backboard",
     tags: [
       "Python",
       "FastAPI",
@@ -43,12 +43,12 @@ export const projects: Project[] = [
     title: "Dialed",
     tagline: "AI guardrails against manipulative social-media content, in real time.",
     description:
-      "A multi-agent system that watches your social feeds and intervenes when it detects manipulative patterns.",
+      "Distributed 5-agent architecture monitoring Instagram in real time, classifying manipulative engagement patterns via an LLM pipeline and intervening before they reach you.",
     longDescription:
-      "Dialed monitors social feeds via browser automation, capturing content and interaction signals, and classifies manipulative patterns through a multi-agent LLM pipeline. The architecture is a distributed network of Fetch.ai uAgents handling classification, session-state tracking, and adaptive intervention logic — dynamically filtering and modifying the feed as it loads. Voice responses are generated through ElevenLabs, with Supabase backing the session and user state.",
+      "Dialed monitors Instagram via browser automation, capturing content and interaction signals, and classifies manipulative patterns through an LLM-based pipeline. The architecture is a distributed 5-agent Fetch.ai uAgents system handling classification, session-state tracking, and adaptive intervention logic — dynamically filtering and modifying the feed as it loads. Voice responses are generated through ElevenLabs, with Supabase backing the session and user state.",
     year: "2026",
     status: "live",
-    award: "2x BeachHacks 9.0 Winner",
+    award: "BeachHacks 9.0 — Best Mental Health + Best Use of Fetch.ai",
     tags: [
       "Python",
       "FastAPI",
