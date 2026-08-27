@@ -108,9 +108,60 @@ export default async function ProjectPage({ params }: { params: Params }) {
           ) : null}
         </div>
 
+        {project.demoNote ? (
+          <p className="mt-3 text-xs text-muted">{project.demoNote}</p>
+        ) : null}
+
         <article className="mt-10 text-base leading-relaxed text-foreground/90">
           <p>{project.longDescription ?? project.description}</p>
         </article>
+
+        {project.metrics ? (
+          <section className="mt-12">
+            <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+              Benchmark results
+            </h2>
+            <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-subtle bg-subtle/60 sm:grid-cols-3">
+              {project.metrics.items.map((m) => (
+                <div key={m.label} className="bg-background px-4 py-5">
+                  <dt className="text-xs leading-snug text-muted">{m.label}</dt>
+                  <dd className="mt-1.5 font-mono text-2xl tracking-tight text-foreground">
+                    {m.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            {project.metrics.caption ? (
+              <p className="mt-4 text-sm leading-relaxed text-muted">
+                {project.metrics.caption}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
+
+        {project.stories?.length ? (
+          <section className="mt-12 space-y-8">
+            <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+              What I learned
+            </h2>
+            {project.stories.map((s) => (
+              <div key={s.title}>
+                <h3 className="text-lg font-semibold tracking-tight">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-base leading-relaxed text-foreground/90">
+                  {s.body}
+                </p>
+              </div>
+            ))}
+          </section>
+        ) : null}
+
+        {project.demoCaveat ? (
+          <p className="mt-12 border-t border-subtle pt-6 text-sm leading-relaxed text-muted">
+            {project.demoCaveat}
+          </p>
+        ) : null}
       </main>
       <Footer />
     </>

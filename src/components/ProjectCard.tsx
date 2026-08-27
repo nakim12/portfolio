@@ -114,6 +114,10 @@ export function ProjectCard({ project, index }: Props) {
             </a>
           ) : null}
         </div>
+
+        {project.demoNote ? (
+          <p className="mt-3 text-xs text-muted">{project.demoNote}</p>
+        ) : null}
       </div>
     </motion.article>
   );

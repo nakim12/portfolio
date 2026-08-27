@@ -20,9 +20,11 @@ export function About() {
           <p>
             Most recently I was a data science intern at BlueAlpha, building
             synthetic data generators and benchmarking workflows for Marketing
-            Mix Modeling. Before that I spent nine months at NCEAS designing
-            reproducible pipelines for biodiversity data. On the side, I build
-            agentic AI projects, most recently Romus, a real-time computer
+            Mix Modeling — work I carried into Juno, an agentic copilot that
+            interprets MMM outputs and ships with a benchmark measuring how far
+            its advice can be trusted. Before that I spent nine months at NCEAS
+            designing reproducible pipelines for biodiversity data. On the
+            side, I build agentic AI projects like Romus, a real-time computer
             vision form coach, and Dialed, a multi-agent guardrail layer for
             social media.
           </p>
