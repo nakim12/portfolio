@@ -37,7 +37,7 @@ export function ProjectCard({ project, index, featured = false }: Props) {
         // The featured card runs image-beside-content at desktop. Stacking a
         // full-width cover above the copy costs ~500px of page height for no
         // extra legibility once the image is already 550px wide.
-        featured ? "lg:grid lg:grid-cols-2 lg:items-center" : "flex h-full flex-col",
+        featured ? "lg:grid lg:grid-cols-2 lg:items-stretch" : "flex h-full flex-col",
       ].join(" ")}
     >
       {/* Stretched link overlay: makes the entire card clickable while still
@@ -53,9 +53,12 @@ export function ProjectCard({ project, index, featured = false }: Props) {
         <div
           className={[
             "relative w-full overflow-hidden border-b border-surface-border bg-subtle/30",
-            // 1200/630 matches the source art exactly, so nothing gets cropped.
+            // At desktop the featured cover fills its column instead of holding
+            // an aspect, so it can't letterbox against the taller copy beside
+            // it. The source is cut to that column's ratio, so cover has
+            // nothing to crop; stacked below lg it center-crops to 1200/630.
             featured
-              ? "aspect-[1200/630] lg:border-b-0"
+              ? "aspect-[1200/630] lg:aspect-auto lg:h-full lg:border-b-0"
               : "aspect-[16/9]",
           ].join(" ")}
         >
