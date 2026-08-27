@@ -8,9 +8,10 @@ import type { Project } from "@/data/projects";
 type Props = {
   project: Project;
   index: number;
+  featured?: boolean;
 };
 
-export function ProjectCard({ project, index }: Props) {
+export function ProjectCard({ project, index, featured = false }: Props) {
   const reduce = useReducedMotion();
   const fromRight = index % 2 === 1;
 
@@ -29,7 +30,13 @@ export function ProjectCard({ project, index }: Props) {
       whileInView={reduce ? undefined : { opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative overflow-hidden rounded-2xl border border-subtle bg-surface transition-colors hover:border-foreground/25 focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/30 focus-within:ring-offset-2 focus-within:ring-offset-background"
+      className={[
+        "group relative overflow-hidden rounded-2xl border border-surface-border bg-surface transition-colors hover:border-foreground/25 focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/30 focus-within:ring-offset-2 focus-within:ring-offset-background",
+        // The featured card runs image-beside-content at desktop. Stacking a
+        // full-width cover above the copy costs ~500px of page height for no
+        // extra legibility once the image is already 550px wide.
+        featured ? "lg:grid lg:grid-cols-2 lg:items-center" : "flex h-full flex-col",
+      ].join(" ")}
     >
       {/* Stretched link overlay: makes the entire card clickable while still
           allowing the in-card external anchors below to intercept their own
@@ -41,20 +48,45 @@ export function ProjectCard({ project, index }: Props) {
       />
 
       {project.cover ? (
-        <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-subtle bg-subtle/30">
+        <div
+          className={[
+            "relative w-full overflow-hidden border-b border-surface-border bg-subtle/30",
+            // 1200/630 matches the source art exactly, so nothing gets cropped.
+            featured
+              ? "aspect-[1200/630] lg:border-b-0"
+              : "aspect-[16/9]",
+          ].join(" ")}
+        >
           <Image
             src={project.cover}
             alt={`${project.title} preview`}
             fill
-            sizes="(min-width: 768px) 768px, 100vw"
+            sizes="(min-width: 1024px) 552px, 100vw"
+            priority={featured}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         </div>
       ) : null}
 
-      <div className="px-6 py-7 sm:px-8 sm:py-8">
+      <div
+        className={[
+          "flex flex-col",
+          featured ? "px-6 py-8 sm:px-10" : "flex-1 px-6 py-7 sm:px-8",
+        ].join(" ")}
+      >
+        {featured ? (
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+            Featured
+          </p>
+        ) : null}
+
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-          <h3 className="text-2xl font-bold tracking-tight transition-colors group-hover:text-accent sm:text-3xl">
+          <h3
+            className={[
+              "font-bold tracking-tight transition-colors group-hover:text-accent",
+              featured ? "text-3xl sm:text-4xl" : "text-2xl",
+            ].join(" ")}
+          >
             {project.title}
             <span className="text-accent">.</span>
           </h3>
@@ -63,35 +95,46 @@ export function ProjectCard({ project, index }: Props) {
           </span>
         </div>
 
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
+        {project.stats?.length ? (
+          <p className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+            {project.stats.join("  ·  ")}
+          </p>
+        ) : null}
+
+        <p
+          className={[
+            "mt-3 max-w-2xl leading-relaxed text-muted",
+            featured ? "text-lg sm:text-xl" : "text-base",
+          ].join(" ")}
+        >
           {project.tagline}
         </p>
 
-        <p className="mt-5 max-w-2xl text-sm leading-relaxed text-foreground/80">
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
           {project.description}
         </p>
 
         {project.award ? (
-          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
+          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
             ★ {project.award}
           </p>
         ) : null}
 
-        <div className="mt-6 flex flex-wrap items-center gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-accent-soft px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">
             {statusLabel}
           </span>
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-subtle px-2.5 py-0.5 text-xs text-muted"
+              className="rounded-full border border-surface-border px-2.5 py-0.5 text-xs text-muted"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6 text-sm">
           <span className="font-medium text-foreground">Read more →</span>
           {project.url ? (
             <a

@@ -9,7 +9,7 @@ type Props = {
 
 export function SectionHeading({ index, label, title, description }: Props) {
   return (
-    <Reveal className="mb-12">
+    <Reveal className="mb-8">
       <p className="font-[family-name:var(--font-serif)] text-base italic tracking-normal text-muted">
         <span className="text-accent">{index}.</span> {label}
       </p>

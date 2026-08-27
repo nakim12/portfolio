@@ -45,7 +45,7 @@ export function Hero() {
     <motion.section
       id="top"
       style={reduce ? undefined : { opacity }}
-      className="fixed inset-0 z-0 flex flex-col justify-center overflow-hidden pt-16 pb-24"
+      className="fixed inset-x-0 top-0 z-0 flex h-[75svh] flex-col justify-center overflow-hidden pt-16 pb-12"
     >
       <TopoField className="pointer-events-none absolute inset-0 h-full w-full" />
 
@@ -55,13 +55,13 @@ export function Hero() {
       <MistField className="pointer-events-none absolute inset-0 h-full w-full" />
 
       {/* Pine silhouette ridge at the bottom of the hero. */}
-      <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[28vh] w-full" />
+      <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[20svh] w-full" />
 
       <motion.div
         variants={reduce ? undefined : staggerContainer}
         initial="hidden"
         animate="show"
-        className="relative mx-auto w-full max-w-3xl px-6"
+        className="wrap wrap-wide relative"
       >
         <motion.p
           variants={reduce ? undefined : staggerItem}
@@ -113,7 +113,14 @@ export function Hero() {
 
         <motion.p
           variants={reduce ? undefined : staggerItem}
-          className="mt-6 max-w-xl text-lg leading-relaxed text-muted"
+          className="mt-6 max-w-2xl text-xl leading-snug text-foreground/90 sm:text-2xl"
+        >
+          {profile.headline}
+        </motion.p>
+
+        <motion.p
+          variants={reduce ? undefined : staggerItem}
+          className="mt-3 max-w-xl text-sm leading-relaxed text-muted"
         >
           {profile.intro}
         </motion.p>

@@ -1,26 +1,16 @@
-"use client";
-
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useMemo, useState } from "react";
-import { allTags, projects } from "@/data/projects";
+import { projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
 import { SectionHeading } from "./SectionHeading";
 
-const ALL = "All";
-
 export function Projects() {
-  const [active, setActive] = useState<string>(ALL);
-  const reduce = useReducedMotion();
-
-  const filters = useMemo(() => [ALL, ...allTags], []);
-
-  const filtered = useMemo(() => {
-    if (active === ALL) return projects;
-    return projects.filter((p) => p.tags.includes(active));
-  }, [active]);
+  const featured = projects.filter((p) => p.featured);
+  const rest = projects.filter((p) => !p.featured);
 
   return (
-    <section id="projects" className="py-24">
+    <section
+      id="projects"
+      className="wrap wrap-wide scroll-mt-24 py-14 lg:py-16"
+    >
       <SectionHeading
         index="III"
         label="Projects"
@@ -28,47 +18,23 @@ export function Projects() {
         description="A handful of products and experiments. Click any project for the longer story."
       />
 
-      <div className="mb-12 flex flex-wrap gap-2">
-        {filters.map((tag) => {
-          const isActive = active === tag;
-          return (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => setActive(tag)}
-              className={[
-                "rounded-full px-3 py-1 text-xs font-mono uppercase tracking-[0.14em] transition-colors",
-                isActive
-                  ? "bg-foreground text-background"
-                  : "border border-subtle text-muted hover:text-foreground hover:border-foreground/30",
-              ].join(" ")}
-            >
-              {tag}
-            </button>
-          );
-        })}
+      <div className="flex flex-col gap-8">
+        {featured.map((p, i) => (
+          <ProjectCard key={p.slug} project={p} index={i} featured />
+        ))}
+
+        {rest.length ? (
+          <div className="grid gap-8 lg:grid-cols-2">
+            {rest.map((p, i) => (
+              <ProjectCard
+                key={p.slug}
+                project={p}
+                index={featured.length + i}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
-
-      <motion.div layout className="flex flex-col gap-12">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((p, i) => (
-            <motion.div
-              key={p.slug}
-              layout
-              exit={reduce ? undefined : { opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <ProjectCard project={p} index={i} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
-
-      {filtered.length === 0 ? (
-        <p className="mt-8 text-sm text-muted">
-          No projects with this tag yet.
-        </p>
-      ) : null}
     </section>
   );
 }

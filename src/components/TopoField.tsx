@@ -36,7 +36,7 @@ export function TopoField({ className }: { className?: string }) {
     const accent =
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent")
-        .trim() || "#4a7c59";
+        .trim() || "#57906a";
 
     // Sample resolution. Smaller cells = smoother contours, more CPU.
     const CELL = window.innerWidth < 640 ? 18 : 14;

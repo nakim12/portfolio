@@ -17,11 +17,11 @@ const iconSvgProps = {
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-subtle py-10">
-      <p className="mx-auto mb-6 max-w-3xl px-6 text-center font-[family-name:var(--font-serif)] text-xs italic text-muted/70">
+    <footer className="mt-12 border-t border-subtle py-8">
+      <p className="wrap wrap-wide mb-6 text-center font-[family-name:var(--font-serif)] text-xs italic text-muted/70">
         Set in Inter and Newsreader.
       </p>
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-start justify-between gap-6 px-6 text-xs text-muted sm:flex-row sm:items-center">
+      <div className="wrap wrap-wide flex flex-col items-start justify-between gap-6 text-xs text-muted sm:flex-row sm:items-center">
         <p>
           © {new Date().getFullYear()} {profile.name}. Built with Next.js,
           Tailwind, and Framer Motion.

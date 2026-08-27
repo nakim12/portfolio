@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
         </header>
 
         {project.cover ? (
-          <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-subtle bg-subtle/30">
+          <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-surface-border bg-subtle/30">
             <Image
               src={project.cover}
               alt={`${project.title} preview`}
@@ -121,7 +121,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
             <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
               Benchmark results
             </h2>
-            <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-subtle bg-subtle/60 sm:grid-cols-3">
+            <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-surface-border bg-subtle/60 sm:grid-cols-3">
               {project.metrics.items.map((m) => (
                 <div key={m.label} className="bg-background px-4 py-5">
                   <dt className="text-xs leading-snug text-muted">{m.label}</dt>

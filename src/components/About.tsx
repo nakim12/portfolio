@@ -3,14 +3,16 @@ import { SectionHeading } from "./SectionHeading";
 
 export function About() {
   return (
-    <section id="about" className="py-24">
+    // Wide tier so the left edge lines up with every other section; the prose
+    // itself is still capped to a readable measure below.
+    <section id="about" className="wrap wrap-wide scroll-mt-24 py-14 lg:py-16">
       <SectionHeading
         index="I"
         label="About"
         title="About me"
       />
       <Reveal>
-        <div className="max-w-2xl space-y-5 text-base leading-relaxed text-foreground/90">
+        <div className="max-w-[45rem] space-y-5 text-base leading-relaxed text-foreground/90">
           <p className="drop-cap">
             I&apos;m a recent Statistics &amp; Data Science graduate from UC
             Santa Barbara, with a Technology Management Certification. I&apos;m

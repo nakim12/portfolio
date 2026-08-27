@@ -4,17 +4,23 @@
   color-scheme: dark;
 
   --background: #0a0a0b;
-  --surface: #131316;
+  --surface: #141416;
+  /* One step of elevation only: cards read as lifted via a hairline
+     highlight rather than a shadow. */
+  --surface-border: rgba(255, 255, 255, 0.07);
   --foreground: #fafaf7;
   --muted: #a1a1aa;
   --subtle: #27272a;
-  --accent: #4a7c59;
-  --accent-soft: #1c2e21;
+  /* Lightened from #4a7c59 to clear WCAG AA (4.5:1) for small text on both
+     the page background and the raised card surface. */
+  --accent: #57906a;
+  --accent-soft: #132016;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-subtle: var(--subtle);
@@ -26,7 +32,30 @@
 }
 
 html {
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 6rem;
+}
+
+/* Content width tiers. Prose holds a readable measure for long-form text;
+   wide is for cards and the experience timeline, which have their own
+   internal columns and would otherwise waste the viewport. */
+.wrap {
+  margin-inline: auto;
+  width: 100%;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .wrap {
+    padding-inline: 2rem;
+  }
+}
+
+.wrap-prose {
+  max-width: 45rem;
+}
+
+.wrap-wide {
+  max-width: 75rem;
 }
 
 body {

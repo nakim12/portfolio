@@ -3,7 +3,7 @@ import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 const linkClass =
-  "group flex items-center justify-between rounded-xl border border-subtle bg-surface px-5 py-4 transition-all hover:-translate-y-0.5 hover:border-foreground/20";
+  "group flex items-center justify-between rounded-xl border border-surface-border bg-surface px-5 py-4 transition-all hover:-translate-y-0.5 hover:border-foreground/20";
 
 function urlSlug(url: string): string {
   try {
@@ -18,7 +18,10 @@ export function Connect() {
   const linkedinSlug = urlSlug(profile.links.linkedin);
 
   return (
-    <section id="connect" className="py-24">
+    <section
+      id="connect"
+      className="wrap wrap-wide scroll-mt-24 py-14 lg:py-16"
+    >
       <SectionHeading
         index="IV"
         label="Connect"
@@ -26,7 +29,7 @@ export function Connect() {
         description="Best way to reach me is over email. I'm also on GitHub and LinkedIn."
       />
 
-      <Reveal className="grid gap-3 sm:grid-cols-2">
+      <Reveal className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <a href={`mailto:${profile.email}`} className={linkClass}>
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">

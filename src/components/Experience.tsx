@@ -9,7 +9,10 @@ export function Experience() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="experience" className="py-24">
+    <section
+      id="experience"
+      className="wrap wrap-wide scroll-mt-24 py-14 lg:py-16"
+    >
       <SectionHeading
         index="II"
         label="Experience"
@@ -26,13 +29,16 @@ export function Experience() {
           <motion.li
             key={`${job.company}-${job.start}`}
             variants={reduce ? undefined : staggerItem}
-            className="relative"
+            // Metadata parks in a narrow left column at desktop so the
+            // bullets keep a readable measure instead of stretching to
+            // the full width of the section.
+            className="relative lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12"
           >
             <span
               aria-hidden
               className="absolute -left-[37px] top-1.5 h-3 w-3 rounded-full border-2 border-background bg-accent"
             />
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 lg:block">
               <div>
                 <h3 className="text-lg font-medium tracking-tight">
                   {job.role}{" "}
@@ -40,11 +46,11 @@ export function Experience() {
                 </h3>
                 <p className="text-sm text-muted">{job.location}</p>
               </div>
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted">
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted lg:mt-2">
                 {job.start} — {job.end}
               </p>
             </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-foreground/85">
+            <ul className="mt-4 max-w-[42rem] space-y-2 text-sm leading-relaxed text-foreground/85 lg:mt-0">
               {job.bullets.map((b, i) => (
                 <li key={i} className="flex gap-3">
                   <span

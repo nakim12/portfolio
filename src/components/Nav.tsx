@@ -35,10 +35,10 @@ export function Nav() {
             : "mt-0 rounded-none shadow-none",
         ].join(" ")}
         style={{
-          width: scrolled ? "min(calc(100% - 2rem), 768px)" : "100%",
+          width: scrolled ? "min(calc(100% - 2rem), 75rem)" : "100%",
         }}
       >
-        <nav className="mx-auto flex h-14 max-w-3xl items-center justify-between gap-3 px-4 sm:px-6">
+        <nav className="wrap wrap-wide flex h-14 items-center justify-between gap-3">
           <a
             href="#top"
             className="font-mono text-sm tracking-tight transition-colors hover:text-accent"
