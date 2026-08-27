@@ -75,7 +75,7 @@ export const projects: Project[] = [
     ],
     url: "https://juno.nakim.me",
     repo: "https://github.com/nakim12/juno",
-    cover: "/projects/juno.png",
+    cover: "/projects/juno.jpg",
     demoNote: "Demo sleeps when idle — first load may take ~50s to wake.",
     demoCaveat:
       "Juno is a solo portfolio project, not a product with real users. The public demo replays pre-computed answers; running the agent live on your own MMM upload requires your own Anthropic API key.",
