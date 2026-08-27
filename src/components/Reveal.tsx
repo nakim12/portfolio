@@ -32,10 +32,14 @@ export function Reveal({
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, x, y }}
-      whileInView={reduce ? undefined : { opacity: 1, x: 0, y: 0 }}
+      // The server can't read the motion preference, so it always renders the
+      // hidden state. Opting out on the client with `initial={false}` would
+      // leave that hidden state stuck; instead land straight on the visible
+      // one with a zero-duration transition.
+      initial={reduce ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x, y }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.6, delay, ease }}
+      transition={reduce ? { duration: 0 } : { duration: 0.6, delay, ease }}
     >
       {children}
     </motion.div>
@@ -57,3 +61,17 @@ export const staggerItem = {
     transition: { duration: 0.5, ease },
   },
 };
+
+/**
+ * Stagger variants whose "hidden" state is already visible when the user
+ * prefers reduced motion. Dropping the variants entirely instead would strand
+ * the server-rendered hidden styles, leaving the content invisible.
+ */
+export function staggerVariants(reduce: boolean | null) {
+  if (!reduce) return { container: staggerContainer, item: staggerItem };
+  const shown = { opacity: 1, y: 0 };
+  return {
+    container: { hidden: {}, show: {} },
+    item: { hidden: shown, show: shown },
+  };
+}

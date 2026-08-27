@@ -2,11 +2,12 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { experience } from "@/data/experience";
-import { staggerContainer, staggerItem } from "./Reveal";
+import { staggerVariants } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 export function Experience() {
   const reduce = useReducedMotion();
+  const variants = staggerVariants(reduce);
 
   return (
     <section
@@ -19,7 +20,7 @@ export function Experience() {
         title="Where I've worked"
       />
       <motion.ol
-        variants={reduce ? undefined : staggerContainer}
+        variants={variants.container}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "0px 0px -10% 0px" }}
@@ -28,7 +29,7 @@ export function Experience() {
         {experience.map((job) => (
           <motion.li
             key={`${job.company}-${job.start}`}
-            variants={reduce ? undefined : staggerItem}
+            variants={variants.item}
             // Metadata parks in a narrow left column at desktop so the
             // bullets keep a readable measure instead of stretching to
             // the full width of the section.

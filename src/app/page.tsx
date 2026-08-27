@@ -22,7 +22,7 @@ export default function Home() {
       {/* The Hero is pinned, so the rest of the page starts below it and sits
           above it, sliding up over the hero on scroll. This offset must stay in
           sync with the Hero's own height. */}
-      <div className="relative z-30 mt-[75svh] border-t border-subtle bg-background">
+      <div className="relative z-30 mt-[100svh] border-t border-subtle bg-background">
         <main>
           <About />
           <Divider />

@@ -25,11 +25,13 @@ export function ProjectCard({ project, index, featured = false }: Props) {
   return (
     <motion.article
       initial={
-        reduce ? false : { opacity: 0, x: fromRight ? 32 : -32 }
+        reduce ? { opacity: 1, x: 0 } : { opacity: 0, x: fromRight ? 32 : -32 }
       }
-      whileInView={reduce ? undefined : { opacity: 1, x: 0 }}
+      whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      transition={
+        reduce ? { duration: 0 } : { duration: 0.65, ease: [0.22, 1, 0.36, 1] }
+      }
       className={[
         "group relative overflow-hidden rounded-2xl border border-surface-border bg-surface transition-colors hover:border-foreground/25 focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/30 focus-within:ring-offset-2 focus-within:ring-offset-background",
         // The featured card runs image-beside-content at desktop. Stacking a
