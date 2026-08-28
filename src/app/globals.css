@@ -3,18 +3,53 @@
 :root {
   color-scheme: dark;
 
-  --background: #0a0a0b;
-  --surface: #141416;
-  /* One step of elevation only: cards read as lifted via a hairline
-     highlight rather than a shadow. */
-  --surface-border: rgba(255, 255, 255, 0.07);
-  --foreground: #fafaf7;
-  --muted: #a1a1aa;
-  --subtle: #27272a;
-  /* Lightened from #4a7c59 to clear WCAG AA (4.5:1) for small text on both
-     the page background and the raised card surface. */
-  --accent: #57906a;
-  --accent-soft: #132016;
+  /* Every dark carries a faint cool-green cast rather than being neutral, so
+     the surfaces read as one lit material instead of stacked grey slabs. */
+  --bg: #0a0c0b;
+  --surface-1: #101413;
+  --surface-2: #161b19;
+  --surface-3: #1d2321;
+
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hi: rgba(255, 255, 255, 0.12);
+
+  --text-1: #e8edeb;
+  --text-2: #a3ada9;
+  /* Raised from the specified #6f7875, which measures 3.8:1 on a card and so
+     fails AA for the mono labels it is meant to carry. This clears 4.8:1 on
+     every surface in the system. */
+  --text-3: #868f8b;
+  /* The one warm value. Serif display type renders cream against cool white
+     body copy; subtle enough to read as considered rather than as a second
+     colour, which is also why no other warm hue gets added. */
+  --display: #efe9dd;
+
+  --accent: #7fb08a;
+  --accent-dim: rgba(127, 176, 138, 0.14);
+
+  /* Two low-intensity light sources, one cool and one warm. Anchored to the
+     viewport so the page looks lit from a fixed point rather than painted. */
+  --ambient:
+    radial-gradient(
+      1100px 700px at 12% 15%,
+      rgba(127, 176, 138, 0.06),
+      transparent 65%
+    ),
+    radial-gradient(
+      900px 600px at 85% 8%,
+      rgba(239, 233, 221, 0.035),
+      transparent 60%
+    );
+
+  /* Aliases kept so existing utility classes resolve against the new palette
+     without a rename sweep through every component. */
+  --background: var(--bg);
+  --surface: var(--surface-2);
+  --surface-border: var(--border);
+  --foreground: var(--text-1);
+  --muted: var(--text-2);
+  --subtle: #232a27;
+  --accent-soft: var(--accent-dim);
 }
 
 @theme inline {
@@ -26,6 +61,17 @@
   --color-subtle: var(--subtle);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-bg: var(--bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-hairline: var(--border);
+  --color-hairline-hi: var(--border-hi);
+  --color-text-1: var(--text-1);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-display: var(--display);
+  --color-accent-dim: var(--accent-dim);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
@@ -59,10 +105,21 @@ html {
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
+}
+
+/* The scrolling content panel is opaque and slides over the pinned hero, so it
+   would otherwise cover the ambient light entirely. Painting the same
+   viewport-anchored gradient on both makes them register as one light source
+   across the seam. */
+body,
+.ambient-surface {
+  background-color: var(--bg);
+  background-image: var(--ambient);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 ::selection {
@@ -80,7 +137,9 @@ html::after {
   z-index: 100;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.7'/></svg>");
   background-repeat: repeat;
-  opacity: 0.05;
+  /* Eased off now that the base is tinted: on a neutral black the grain had to
+     work harder to break up banding. */
+  opacity: 0.035;
   mix-blend-mode: overlay;
 }
 

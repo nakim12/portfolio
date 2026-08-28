@@ -18,7 +18,7 @@ const iconSvgProps = {
 export function Footer() {
   return (
     <footer className="mt-12 border-t border-subtle py-8">
-      <p className="wrap wrap-wide mb-6 text-center font-[family-name:var(--font-serif)] text-xs italic text-muted/70">
+      <p className="wrap wrap-wide mb-6 text-center font-[family-name:var(--font-serif)] text-xs italic text-display/60">
         Set in Inter and Newsreader.
       </p>
       <div className="wrap wrap-wide flex flex-col items-start justify-between gap-6 text-xs text-muted sm:flex-row sm:items-center">

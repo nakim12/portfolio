@@ -14,8 +14,8 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#0a0a0b",
-          color: "#fafaf7",
+          background: "#0a0c0b",
+          color: "#e8edeb",
           padding: "80px",
           position: "relative",
           fontFamily:
@@ -29,7 +29,7 @@ export default function OpenGraphImage() {
             top: 0,
             bottom: 0,
             width: 8,
-            background: "#57906a",
+            background: "#7fb08a",
             display: "flex",
           }}
         />
@@ -38,13 +38,13 @@ export default function OpenGraphImage() {
           style={{
             display: "flex",
             fontSize: 24,
-            color: "#a1a1aa",
+            color: "#a3ada9",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
           }}
         >
           nakim
-          <span style={{ color: "#57906a", marginLeft: 2 }}>.</span>
+          <span style={{ color: "#7fb08a", marginLeft: 2 }}>.</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -63,7 +63,7 @@ export default function OpenGraphImage() {
             style={{
               display: "flex",
               fontSize: 38,
-              color: "#a1a1aa",
+              color: "#a3ada9",
               marginTop: 28,
               lineHeight: 1.2,
             }}
@@ -76,7 +76,7 @@ export default function OpenGraphImage() {
           style={{
             display: "flex",
             fontSize: 26,
-            color: "#57906a",
+            color: "#7fb08a",
             letterSpacing: "0.02em",
           }}
         >

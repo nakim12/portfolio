@@ -102,7 +102,7 @@ export function Hero() {
             <motion.span
               key={`l-${i}`}
               variants={charI}
-              className="inline-block font-[family-name:var(--font-serif)] font-medium italic"
+              className="inline-block font-[family-name:var(--font-serif)] font-medium italic text-display"
               aria-hidden
             >
               {c}

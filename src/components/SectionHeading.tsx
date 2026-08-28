@@ -10,7 +10,10 @@ type Props = {
 export function SectionHeading({ index, label, title, description }: Props) {
   return (
     <Reveal className="mb-8">
-      <p className="font-[family-name:var(--font-serif)] text-base italic tracking-normal text-muted">
+      {/* Cream at reduced opacity rather than flat --display: the marker is
+          secondary to the heading below it, so it takes the warm cast without
+          taking the emphasis. */}
+      <p className="font-[family-name:var(--font-serif)] text-base italic tracking-normal text-display/75">
         <span className="text-accent">{index}.</span> {label}
       </p>
       <h2 className="mt-3 text-4xl font-bold tracking-[-0.03em] leading-[1.05] sm:text-5xl">
