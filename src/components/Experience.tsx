@@ -47,7 +47,7 @@ export function Experience() {
                 </h3>
                 <p className="text-sm text-muted">{job.location}</p>
               </div>
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted lg:mt-2">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-3 lg:mt-2">
                 {job.start} — {job.end}
               </p>
             </div>

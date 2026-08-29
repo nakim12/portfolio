@@ -71,14 +71,14 @@ export function Hero() {
       >
         <motion.p
           variants={variants.item}
-          className="font-mono text-xs uppercase tracking-[0.22em] text-muted"
+          className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-3"
         >
           Hi, I&apos;m
         </motion.p>
 
         <motion.h1
           variants={charC}
-          className="mt-4 text-[clamp(3rem,12vw,6.5rem)] font-bold tracking-[-0.04em] leading-[0.95]"
+          className="mt-4 text-[clamp(3.25rem,13vw,7.5rem)] font-bold tracking-[-0.04em] leading-[0.95]"
           aria-label={`${FIRST} ${LAST}`}
         >
           {FIRST.split("").map((c, i) => (

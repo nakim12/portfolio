@@ -13,8 +13,11 @@ export type Project = {
   award?: string;
   /** Renders first, at full width, with a larger image. */
   featured?: boolean;
-  /** Hard numbers shown as a mono row directly under the card title. */
-  stats?: string[];
+  /**
+   * Hard numbers shown as a mono row directly under the card title. Split into
+   * value and label so the card can accent the figure without the unit.
+   */
+  stats?: { value: string; label: string }[];
   /** Shown beside the live link on the card and detail page. */
   demoNote?: string;
   /** Fuller scope-of-the-demo disclosure, detail page only. */
@@ -40,7 +43,11 @@ export const projects: Project[] = [
     year: "2026",
     status: "live",
     featured: true,
-    stats: ["0.897 composite", "100 scenarios", "live demo"],
+    stats: [
+      { value: "0.897", label: "composite" },
+      { value: "100", label: "scenarios" },
+      { value: "Live", label: "demo" },
+    ],
     metrics: {
       caption:
         "Scored across 100 ground-truth scenarios by an LLM-as-judge, with the judge itself validated for reliability. 58 backend tests in CI.",
@@ -90,7 +97,11 @@ export const projects: Project[] = [
       "Romus uses MediaPipe to extract 33-point pose landmarks at ~30 FPS from live video, then runs a deterministic biomechanics rules engine to flag form breakdowns across 3 compound lifts with ~200ms feedback latency. On top of that I built a 4-loop agentic system on Claude Sonnet — with RAG over a curated knowledge base and per-user memory — that generates personalized voice cues during a set and full post-set reports. The backend is FastAPI streaming over WebSockets for low latency, with the Backboard SDK wiring it together.",
     year: "2026",
     status: "live",
-    stats: ["~30 FPS", "~200ms latency", "3 lifts"],
+    stats: [
+      { value: "~30", label: "FPS" },
+      { value: "~200ms", label: "latency" },
+      { value: "3", label: "lifts" },
+    ],
     award: "BroncoHacks 2026 — Best Use of Backboard",
     tags: [
       "Python",
@@ -115,7 +126,11 @@ export const projects: Project[] = [
       "Dialed monitors Instagram via browser automation, capturing content and interaction signals, and classifies manipulative patterns through an LLM-based pipeline. The architecture is a distributed 5-agent Fetch.ai uAgents system handling classification, session-state tracking, and adaptive intervention logic — dynamically filtering and modifying the feed as it loads. Voice responses are generated through ElevenLabs, with Supabase backing the session and user state.",
     year: "2026",
     status: "live",
-    stats: ["5 agents", "real-time", "2 awards"],
+    stats: [
+      { value: "5", label: "agents" },
+      { value: "Real-time", label: "inference" },
+      { value: "2", label: "awards" },
+    ],
     award: "BeachHacks 9.0 — Best Mental Health + Best Use of Fetch.ai",
     tags: [
       "Python",
@@ -140,7 +155,11 @@ export const projects: Project[] = [
       "Built in R/Shiny, this project automates the full pipeline from data ingestion through return analysis, risk metrics, and multi-dimensional visualization. The forecasting layer is an ARIMA pipeline with two configurable modes — conservative and aggressive — and side-by-side accuracy comparison via RMSE, MAE, and MAPE. The dashboard surfaces volatility, correlations, and cumulative returns for any selected portfolio.",
     year: "2025",
     status: "live",
-    stats: ["ARIMA pipeline", "2 modes", "RMSE / MAE / MAPE"],
+    stats: [
+      { value: "ARIMA", label: "pipeline" },
+      { value: "2", label: "modes" },
+      { value: "3", label: "error metrics" },
+    ],
     tags: ["R", "Shiny", "ARIMA", "Time Series", "Finance"],
   },
 ];

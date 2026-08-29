@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
 import type { Project } from "@/data/projects";
 
 type Props = {
@@ -33,7 +34,14 @@ export function ProjectCard({ project, index, featured = false }: Props) {
         reduce ? { duration: 0 } : { duration: 0.65, ease: [0.22, 1, 0.36, 1] }
       }
       className={[
-        "group relative overflow-hidden rounded-2xl border border-surface-border bg-surface transition-colors hover:border-foreground/25 focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/30 focus-within:ring-offset-2 focus-within:ring-offset-background",
+        // Elevation is surface value plus a hairline, never a shadow, which on
+        // a dark base reads as a smudge. The featured card rests one step
+        // higher than the rest so the hierarchy holds without a hover.
+        "group relative overflow-hidden rounded-[14px] border border-hairline",
+        featured ? "bg-surface-3" : "bg-surface-2 hover:bg-surface-3",
+        "transition-[background-color,border-color,transform] duration-[180ms] ease-out",
+        "hover:border-hairline-hi motion-safe:hover:-translate-y-0.5",
+        "focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/30 focus-within:ring-offset-2 focus-within:ring-offset-background",
         // The featured card runs image-beside-content at desktop. Stacking a
         // full-width cover above the copy costs ~500px of page height for no
         // extra legibility once the image is already 550px wide.
@@ -52,24 +60,42 @@ export function ProjectCard({ project, index, featured = false }: Props) {
       {project.cover ? (
         <div
           className={[
-            "relative w-full overflow-hidden border-b border-surface-border bg-subtle/30",
+            // The well sits a step below the card so an image with dark edges
+            // still resolves as a distinct plane rather than a hole.
+            "relative w-full overflow-hidden border-hairline bg-surface-1",
             // At desktop the featured cover fills its column instead of holding
             // an aspect, so it can't letterbox against the taller copy beside
             // it. The source is cut to that column's ratio, so cover has
             // nothing to crop; stacked below lg it center-crops to 1200/630.
             featured
-              ? "aspect-[1200/630] lg:aspect-auto lg:h-full lg:border-b-0"
-              : "aspect-[16/9]",
+              ? "aspect-[1200/630] border-b lg:aspect-auto lg:h-full lg:border-r lg:border-b-0"
+              : "aspect-[16/10] border-b",
           ].join(" ")}
         >
           <Image
             src={project.cover}
             alt={`${project.title} preview`}
             fill
-            sizes="(min-width: 1024px) 552px, 100vw"
+            sizes="(min-width: 1024px) 568px, 100vw"
             priority={featured}
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            className="object-cover transition-transform duration-[240ms] ease-out motion-safe:group-hover:scale-[1.02]"
           />
+
+          {/* Scrim on whichever edge meets the copy, so the screenshot
+              dissolves into the card instead of stopping on a hard line. */}
+          <div
+            aria-hidden
+            className={[
+              "pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t to-transparent",
+              featured ? "from-surface-3 lg:hidden" : "from-surface-2",
+            ].join(" ")}
+          />
+          {featured ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0 hidden w-16 bg-gradient-to-l from-surface-3 to-transparent lg:block"
+            />
+          ) : null}
         </div>
       ) : null}
 
@@ -80,7 +106,7 @@ export function ProjectCard({ project, index, featured = false }: Props) {
         ].join(" ")}
       >
         {featured ? (
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
             Featured
           </p>
         ) : null}
@@ -95,15 +121,27 @@ export function ProjectCard({ project, index, featured = false }: Props) {
             {project.title}
             <span className="text-accent">.</span>
           </h3>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-text-3">
             {project.year}
           </span>
         </div>
 
         {project.stats?.length ? (
-          <p className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
-            {project.stats.join("  ·  ")}
-          </p>
+          <div className="mt-2.5 flex flex-wrap items-baseline gap-x-2 font-mono text-[11px] uppercase tracking-[0.14em] text-text-3">
+            {project.stats.map((stat, i) => (
+              <Fragment key={stat.label}>
+                {i > 0 ? (
+                  <span aria-hidden className="opacity-40">
+                    ·
+                  </span>
+                ) : null}
+                <span>
+                  <span className="text-accent">{stat.value}</span>{" "}
+                  {stat.label}
+                </span>
+              </Fragment>
+            ))}
+          </div>
         ) : null}
 
         <p
