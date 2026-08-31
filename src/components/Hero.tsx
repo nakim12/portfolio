@@ -7,9 +7,7 @@ import {
   useTransform,
 } from "motion/react";
 import { profile } from "@/data/profile";
-import { MistField } from "./MistField";
-import { PineRidge } from "./PineRidge";
-import { TopoField } from "./TopoField";
+import { RidgeField } from "./RidgeField";
 import { staggerVariants } from "./Reveal";
 
 // Split so the surname can pick up a literary serif italic — small
@@ -51,17 +49,21 @@ export function Hero() {
     <motion.section
       id="top"
       style={reduce ? undefined : { opacity }}
-      className="fixed inset-x-0 top-0 z-0 flex h-[100svh] flex-col justify-center overflow-hidden pt-16 pb-24"
+      // Opaque --bg rather than letting the body's ambient gradient through:
+      // the ridge fills are flat --bg, so any gradient behind them would show a
+      // seam along the rearmost crest where the fills begin.
+      className="fixed inset-x-0 top-0 z-0 flex h-[100svh] flex-col justify-center overflow-hidden bg-bg pt-16 pb-24"
     >
-      <TopoField className="pointer-events-none absolute inset-0 h-full w-full" />
+      <RidgeField />
 
-      {/* Drifting mist along the treeline — WebGL fragment shader. Sits
-          between the topo grid and the pine silhouettes so fog reads as
-          rolling through/behind the trees. */}
-      <MistField className="pointer-events-none absolute inset-0 h-full w-full" />
-
-      {/* Pine silhouette ridge at the bottom of the hero. */}
-      <PineRidge className="pointer-events-none absolute inset-x-0 bottom-0 h-[28svh] w-full" />
+      {/* The ambient light is re-applied over the ridges instead of behind
+          them. Same viewport-anchored gradient as the rest of the page, so it
+          lines up across the seam, but compositing it after the occlusion keeps
+          the fills matching their background exactly. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 [background-image:var(--ambient)]"
+      />
 
       <motion.div
         variants={variants.container}

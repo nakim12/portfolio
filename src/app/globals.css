@@ -143,6 +143,44 @@ html::after {
   mix-blend-mode: overlay;
 }
 
+/* Masks for the hero ridgeline, in element space rather than viewBox space:
+   with preserveAspectRatio "slice" the visible slice of the viewBox swings with
+   the container's aspect ratio, so a mask defined in viewBox units drifts off
+   the copy it is supposed to protect. */
+.ridge-wide {
+  --ridge-hole: radial-gradient(
+    ellipse 42% 38% at 33% 50%,
+    rgba(0, 0, 0, 0) 52%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-mask-image: var(--ridge-hole);
+  mask-image: var(--ridge-hole);
+}
+
+/* Per-ridge drift for the hero ridgeline. Alternating rather than looping, so
+   the paths never need to be periodic or double-width, and different speeds per
+   ridge read as parallax. Transform only — the geometry is never recomputed. */
+@keyframes ridge-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--ridge-dx));
+  }
+}
+
+.ridge-drift {
+  animation: ridge-drift var(--ridge-dur) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ridge-drift {
+    animation: none;
+    will-change: auto;
+  }
+}
+
 /* Drop cap for the first paragraph of long-form prose (About). */
 .drop-cap::first-letter {
   font-family: var(--font-serif), Georgia, serif;
