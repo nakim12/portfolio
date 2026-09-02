@@ -143,42 +143,73 @@ html::after {
   mix-blend-mode: overlay;
 }
 
-/* Masks for the hero ridgeline, in element space rather than viewBox space:
-   with preserveAspectRatio "slice" the visible slice of the viewBox swings with
-   the container's aspect ratio, so a mask defined in viewBox units drifts off
-   the copy it is supposed to protect. */
-.ridge-wide {
-  --ridge-hole: radial-gradient(
-    ellipse 42% 38% at 33% 50%,
-    rgba(0, 0, 0, 0) 52%,
-    rgba(0, 0, 0, 1) 100%
+/* Cards catch light from the same place the hero's crests do. The scene's
+   afterglow sits at 0.64 of the frame width, so both of these peak there and
+   fall away toward the dark left edge — the same horizontal shape as the
+   canvas rim light, flattened onto a straight edge. A single light direction
+   across the page is what makes elevation read as lit rather than outlined.
+
+   Two passes, mirroring the crest: a wide dim wash under a hairline. The wash
+   carries its vertical falloff as a mask so the two gradients multiply instead
+   of being baked into one unreadable stop list. */
+.rim-wash {
+  background-image: linear-gradient(
+    to right,
+    rgba(127, 176, 138, 0.05) 0%,
+    rgba(127, 176, 138, 0.09) 22%,
+    rgba(127, 176, 138, 0.15) 45%,
+    rgba(127, 176, 138, 0.22) 64%,
+    rgba(127, 176, 138, 0.19) 84%,
+    rgba(127, 176, 138, 0.13) 100%
   );
-  -webkit-mask-image: var(--ridge-hole);
-  mask-image: var(--ridge-hole);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
 }
 
-/* Per-ridge drift for the hero ridgeline. Alternating rather than looping, so
-   the paths never need to be periodic or double-width, and different speeds per
-   ridge read as parallax. Transform only — the geometry is never recomputed. */
-@keyframes ridge-drift {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(var(--ridge-dx));
-  }
+/* Near-opaque at the peak, as on the hero's nearest crest. Anything dimmer
+   disappears against a screenshot, which is what a card's top edge usually
+   is, and then the whole gesture reads as a border that got slightly lighter. */
+.rim-edge {
+  background-image: linear-gradient(
+    to right,
+    rgba(239, 233, 221, 0.18) 0%,
+    rgba(239, 233, 221, 0.3) 22%,
+    rgba(239, 233, 221, 0.55) 45%,
+    rgba(239, 233, 221, 0.8) 64%,
+    rgba(239, 233, 221, 0.68) 84%,
+    rgba(239, 233, 221, 0.46) 100%
+  );
 }
 
-.ridge-drift {
-  animation: ridge-drift var(--ridge-dur) ease-in-out infinite alternate;
-  will-change: transform;
+/* Project pages open on a still frame of the hero's landscape. Static rather
+   than the canvas on purpose: the motion belongs to the front door, and a
+   second animated field a click later would read as a screensaver instead of
+   as the same place. */
+.ridge-band-scene {
+  background-image: url("/ridge-band.svg");
+  background-size: cover;
+  background-position: bottom center;
+  background-repeat: no-repeat;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ridge-drift {
-    animation: none;
-    will-change: auto;
-  }
+/* Left veil for the copy, exactly as the hero and the link-preview card hold
+   theirs, plus a fade down to the page colour so the band resolves into the
+   content instead of ending on a rule. */
+.ridge-band-veil {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(10, 12, 11, 0.62) 0%,
+      rgba(10, 12, 11, 0.5) 45%,
+      rgba(10, 12, 11, 0.18) 72%,
+      rgba(10, 12, 11, 0) 92%
+    ),
+    linear-gradient(
+      to top,
+      var(--bg) 0%,
+      rgba(10, 12, 11, 0.34) 14%,
+      rgba(10, 12, 11, 0) 44%
+    );
 }
 
 /* Drop cap for the first paragraph of long-form prose (About). */

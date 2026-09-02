@@ -48,6 +48,19 @@ export function ProjectCard({ project, index, featured = false }: Props) {
         featured ? "lg:grid lg:grid-cols-2 lg:items-stretch" : "flex h-full flex-col",
       ].join(" ")}
     >
+      {/* Rim light along the top edge, lit from the same direction as the
+          hero's crests. It replaces brightening the whole border uniformly,
+          which reads as an outline switching on; a directional edge reads as
+          the card turning toward a light. */}
+      <div
+        aria-hidden
+        className="rim-wash pointer-events-none absolute inset-x-0 top-0 z-20 h-6 opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-within:opacity-100"
+      />
+      <div
+        aria-hidden
+        className="rim-edge pointer-events-none absolute inset-x-0 top-0 z-20 h-px opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-within:opacity-100"
+      />
+
       {/* Stretched link overlay: makes the entire card clickable while still
           allowing the in-card external anchors below to intercept their own
           clicks via z-index layering. */}

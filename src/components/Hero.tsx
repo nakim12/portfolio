@@ -6,8 +6,9 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
+import { useMemo, useRef } from "react";
 import { profile } from "@/data/profile";
-import { RidgeField } from "./RidgeField";
+import { RidgeScene } from "./RidgeScene";
 import { staggerVariants } from "./Reveal";
 
 // Split so the surname can pick up a literary serif italic — small
@@ -31,6 +32,11 @@ const charItem = {
 };
 
 export function Hero() {
+  // The canvas sizes its readability veils from where these actually render,
+  // rather than from coordinates guessed per breakpoint.
+  const copyRef = useRef<HTMLDivElement>(null);
+  const cueRef = useRef<HTMLAnchorElement>(null);
+  const protect = useMemo(() => [copyRef, cueRef], []);
   const reduce = useReducedMotion();
   const variants = staggerVariants(reduce);
   const shownChar = { opacity: 1, y: 0 };
@@ -49,23 +55,15 @@ export function Hero() {
     <motion.section
       id="top"
       style={reduce ? undefined : { opacity }}
-      // Opaque --bg rather than letting the body's ambient gradient through:
-      // the ridge fills are flat --bg, so any gradient behind them would show a
-      // seam along the rearmost crest where the fills begin.
+      // Opaque, and with no ambient-gradient layer: the canvas paints its own
+      // sky, aurora and afterglow, so the page-wide ambient light would only
+      // wash them out.
       className="fixed inset-x-0 top-0 z-0 flex h-[100svh] flex-col justify-center overflow-hidden bg-bg pt-16 pb-24"
     >
-      <RidgeField />
-
-      {/* The ambient light is re-applied over the ridges instead of behind
-          them. Same viewport-anchored gradient as the rest of the page, so it
-          lines up across the seam, but compositing it after the occlusion keeps
-          the fills matching their background exactly. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 [background-image:var(--ambient)]"
-      />
+      <RidgeScene protect={protect} />
 
       <motion.div
+        ref={copyRef}
         variants={variants.container}
         initial="hidden"
         animate="show"
@@ -155,6 +153,7 @@ export function Hero() {
       {/* Scroll affordance. The hero fills the viewport, so without this there
           is nothing at rest to signal the page continues. */}
       <motion.a
+        ref={cueRef}
         href="#about"
         aria-label="Scroll to about"
         initial={{ opacity: 0 }}
