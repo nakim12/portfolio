@@ -74,6 +74,16 @@ export function ridgeValue(i: number, u: number, t: number) {
   return v;
 }
 
+/** Highest point of ridge `i`'s crest at time `t`, in amplitude units. */
+export function ridgePeak(i: number, t: number, steps = 240) {
+  let peak = 0;
+  for (let k = 0; k <= steps; k++) {
+    const v = ridgeValue(i, k / steps, t);
+    if (v > peak) peak = v;
+  }
+  return peak || 1;
+}
+
 /**
  * Horizontal shape of the rim light. The afterglow sits at 0.64 of the width,
  * so a crest facing it catches more light than one at the dark left edge; a
@@ -165,4 +175,47 @@ export function ridgeFill(f: number) {
     from: hex(mix(HAZE, NEAR, d)),
     to: hex(mix(HAZE, NEAR, Math.min(1, d + 0.3))),
   };
+}
+
+export type Sample = { x: number; y: number; r: number };
+
+/**
+ * Points drawn uniformly from the area under ridge `i`, by rejection sampling
+ * against its own mixture: propose a point in the bounding box, keep it if it
+ * falls under the curve. The hero opens on this, because the landscape is a
+ * stack of densities and the honest way to introduce it is to draw from one.
+ * The silhouette then emerges from where the draws happen to be dense, rather
+ * than from points travelling to positions decided in advance — which is the
+ * whole idea, and is why this cannot be shortcut into a scatter animation.
+ *
+ * `baseline` and `ampScale` are parameters because the opening samples the
+ * crest while it is held above, and drawn larger than, the place it eventually
+ * settles.
+ */
+export function sampleUnderRidge(
+  L: Layout,
+  i: number,
+  baseline: number,
+  count: number,
+  seed: number,
+  ampScale = 1,
+): Sample[] {
+  const r = rng(seed);
+  const amp = ridgeGeometry(L, i).amp * ampScale;
+  const peak = ridgePeak(i, 0);
+  const out: Sample[] = [];
+  // Acceptance runs to roughly a third for these mixtures, so the guard only
+  // exists so that a degenerate layout cannot spin here forever.
+  for (let guard = 0; out.length < count && guard < count * 40; guard++) {
+    const u = r();
+    const v = r();
+    const jitter = r();
+    if (v * peak >= ridgeValue(i, u, 0)) continue;
+    out.push({
+      x: u * L.w,
+      y: baseline - v * peak * amp,
+      r: (0.85 + jitter * 0.55) * Math.min(1.5, L.s),
+    });
+  }
+  return out;
 }

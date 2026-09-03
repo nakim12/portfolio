@@ -11,7 +11,10 @@ import {
   rgba,
   ridgeFill,
   ridgeGeometry,
+  ridgePeak,
   ridgeValue,
+  Sample,
+  sampleUnderRidge,
   STARS,
   TOWARD_LIGHT,
 } from "@/lib/ridge";
@@ -266,8 +269,55 @@ const OVERSCAN = 0.03;
  *  bottom edge and expose the backdrop under it. */
 const UNDERSCAN = 140;
 
-const INTRO_MS = 1500;
-/** Fraction of the intro spent staggering ridge starts, back to front. */
+/**
+ * The opening sequence, once per session, in four phases.
+ *
+ *   sampling  points accumulate under the frontmost ridge's own density
+ *   resolve   the crest traces in over them, left to right, as they fade
+ *   settle    the crest lowers into place; the field, sky and stars build up
+ *   content   the copy arrives on the assembled composition
+ *
+ * It is phase zero of this canvas rather than a separate overlay, so there is
+ * no crossfade between a loader and a hero: the curve that forms while the
+ * page loads *is* the frontmost ridge. That also means it has to share the
+ * budget with the field assembly rather than run in front of it — the two in
+ * sequence would put the copy nearly three seconds out.
+ */
+const SAMPLE_MS = 500;
+const RESOLVE_MS = 200;
+const SETTLE_MS = 520;
+const SCENE_MS = SAMPLE_MS + RESOLVE_MS + SETTLE_MS;
+/**
+ * How much longer sampling may hold, waiting on the webfonts. Revealing before
+ * they land means the headline reflows the instant it arrives, which is the one
+ * thing that would undo the whole sequence. Capped so that even a cold font
+ * cache keeps the sequence inside 1.4s; past that the page reveals regardless,
+ * because a half-built hero still beats a spinner.
+ */
+const FONT_GRACE_MS = 180;
+/**
+ * How far before the end of the sequence the copy is released. Small, so the
+ * composition establishes itself first and the words land on a finished
+ * picture. Raising this to RESOLVE_MS + SETTLE_MS instead brings the copy in
+ * with the crest, while the field is still building behind it, which is ~500ms
+ * faster to first readable text.
+ */
+const CONTENT_LEAD_MS = 150;
+/** Draws in the cloud. Enough that the shape is unmistakable, few enough that
+ *  each one still reads as an individual draw rather than as a fill. */
+const TARGET_SAMPLES = 560;
+/**
+ * How tall the sampled crest is drawn, as a share of the frame. A share rather
+ * than a multiple of its settled height, because that height is capped by
+ * width, not by the frame: on a phone the frontmost ridge stands only ~70px
+ * tall, and a fixed multiple that read well on a desktop would leave the cloud
+ * there as a smear across the middle. Sampling it at its settled size is not an
+ * option either — it is the flattest curve in the field, and 160px of it on a
+ * 900px frame reads as dust rather than as a distribution.
+ */
+const SAMPLE_CREST = 0.34;
+
+/** Fraction of the field assembly spent staggering ridge starts, back to front. */
 const INTRO_SPREAD = 0.42;
 /** How much later the right edge of a ridge starts rising than its left edge.
  *  This is what makes each crest read as tracing rather than simply growing. */
@@ -286,19 +336,97 @@ const FAR_F = 0.45;
  * is cheaper than drawing the group sharp, because it is a ninth of the fill.
  */
 const FAR_SCALE = 0.34;
-/** Fraction of the intro over which the far field fades up. Distant, hazy
- *  terrain emerging from the haze wants a fade, not a rise. */
-const FAR_FADE = 0.3;
 
 const clamp01 = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x);
+
+/** The state of the opening sequence at one instant. */
+type Seq = {
+  /** Fraction of the sample cloud drawn so far. */
+  dots: number;
+  dotAlpha: number;
+  /** Fraction of the frontmost crest traced in, left to right. */
+  trace: number;
+  /** How much of its raised offset the frontmost crest still holds, 1 = all. */
+  lift: number;
+  /** Alpha of the frontmost ridge's fill, which arrives after its crest. */
+  frontFill: number;
+  /** Assembly of every other ridge. 1 means the field is complete. */
+  field: number;
+  /** Alpha of the backdrop, the far field and the overlays, which come up
+   *  together: the sky and the most distant terrain are the same depth. */
+  backdrop: number;
+};
+
+const SETTLED: Seq = {
+  dots: 0,
+  dotAlpha: 0,
+  trace: 1,
+  lift: 0,
+  frontFill: 1,
+  field: 1,
+  backdrop: 1,
+};
+
+/**
+ * `sampled` is the elapsed time at which the sampling phase ended, or 0 while
+ * it is still running — it is not a fixed boundary, because sampling holds
+ * until the fonts are ready.
+ */
+function sequence(elapsed: number, sampled: number): Seq {
+  if (!sampled) {
+    return {
+      dots: clamp01(elapsed / SAMPLE_MS),
+      dotAlpha: 1,
+      trace: 0,
+      lift: 1,
+      frontFill: 0,
+      field: 0,
+      backdrop: 0,
+    };
+  }
+
+  const s = elapsed - sampled;
+  if (s < RESOLVE_MS) {
+    const p = clamp01(s / RESOLVE_MS);
+    return {
+      dots: 1,
+      dotAlpha: 1 - smoothstep(p),
+      trace: p,
+      lift: 1,
+      frontFill: 0,
+      field: 0,
+      backdrop: 0,
+    };
+  }
+
+  const q = clamp01((s - RESOLVE_MS) / SETTLE_MS);
+  if (q >= 1) return SETTLED;
+  return {
+    dots: 1,
+    dotAlpha: 0,
+    trace: 1,
+    lift: 1 - smoothstep(q),
+    // Solid early, so the silhouette is opaque before it starts uncovering the
+    // ridges rising behind it. Left translucent it reads as two overlaid
+    // drawings rather than as one thing in front of another.
+    frontFill: clamp01(q / 0.3),
+    field: q,
+    backdrop: smoothstep(clamp01(q / 0.75)),
+  };
+}
 
 type Frame = {
   t: number;
   pointer: number;
-  /** 0..1 intro progress. 1 means fully assembled. */
-  reveal: number;
   /** 0..1 hero exit progress, driving vertical parallax. */
   exit: number;
+  seq: Seq;
+  /** Pixels the frontmost crest sits above its settled baseline at lift 1. */
+  liftPx: number;
+  /** Multiple of its settled amplitude the frontmost crest is drawn at, at
+   *  lift 1. Eases back to 1 alongside the descent, so the curve recedes into
+   *  the field rather than dropping into it at full size. */
+  ampBoost: number;
 };
 
 type Cache = {
@@ -317,14 +445,22 @@ function drawRidges(
   to: number,
 ) {
   const { w, h, n, gap, s } = L;
+  const { seq } = frame;
   const left = -OVERSCAN * w;
   const right = (1 + OVERSCAN) * w;
   const uSpan = 1 + 2 * OVERSCAN;
   const sweepLen = 1 - INTRO_SPREAD;
-  const intro = frame.reveal < 1;
+  const building = seq.field < 1;
 
   for (let i = from; i < to; i++) {
-    const { f, baseline, amp } = ridgeGeometry(L, i);
+    // The frontmost ridge is the one that was sampled, so it is already drawn
+    // by the time the field starts building and takes none of the rise below.
+    // All it has left to do is come down to its place at the front.
+    const front = i === n - 1;
+    const { f, baseline, amp: settledAmp } = ridgeGeometry(L, i);
+    const amp = front
+      ? settledAmp * (1 + (frame.ampBoost - 1) * seq.lift)
+      : settledAmp;
 
     // Back-to-front stagger. Each ridge rises out of its own baseline rather
     // than being clipped in from the side: a clipped fill would drag a hard
@@ -332,9 +468,10 @@ function drawRidges(
     // nothing but terrain growing.
     let p = 1;
     let alpha = 1;
-    if (intro) {
+    const rising = building && !front;
+    if (rising) {
       p = clamp01(
-        (frame.reveal - (i / Math.max(1, n - 1)) * INTRO_SPREAD) / sweepLen,
+        (seq.field - (i / Math.max(1, n - 1)) * INTRO_SPREAD) / sweepLen,
       );
       if (p <= 0) continue;
       // Opacity tracks the ridge's own progress rather than snapping in early,
@@ -343,13 +480,15 @@ function drawRidges(
       alpha = smoothstep(p);
     }
 
+    const y0 = front ? baseline - frame.liftPx * seq.lift : baseline;
+
     const xs: number[] = [];
     const ys: number[] = [];
     for (let k = 0; k <= STEPS; k++) {
       const u01 = k / STEPS;
       const u = -OVERSCAN + u01 * uSpan;
       const v = ridgeValue(i, u, frame.t);
-      if (intro) {
+      if (rising) {
         // smoothstep rather than an ease-out: the rise has to leave the
         // baseline with zero slope, or the join between risen and unrisen
         // terrain shows as a hard corner travelling across the frame.
@@ -360,15 +499,31 @@ function drawRidges(
         // and hides the flat sections behind one another while they wait.
         ys.push(baseline + (h * 0.99 - baseline) * (1 - rise) - amp * v * rise);
       } else {
-        ys.push(baseline - amp * v);
+        ys.push(y0 - amp * v);
       }
       xs.push(u * w);
     }
 
-    const crest = () => {
+    /** The crest, or the leading `upto` fraction of it while it traces in. */
+    const crest = (upto = 1) => {
       ctx.beginPath();
       ctx.moveTo(xs[0], ys[0]);
-      for (let k = 1; k <= STEPS; k++) ctx.lineTo(xs[k], ys[k]);
+      if (upto >= 1) {
+        for (let k = 1; k <= STEPS; k++) ctx.lineTo(xs[k], ys[k]);
+        return;
+      }
+      const end = upto * STEPS;
+      const whole = Math.floor(end);
+      for (let k = 1; k <= whole; k++) ctx.lineTo(xs[k], ys[k]);
+      // Interpolate the final segment, so the tip advances smoothly instead of
+      // snapping forward one sample at a time.
+      const part = end - whole;
+      if (part > 0 && whole < STEPS) {
+        ctx.lineTo(
+          xs[whole] + (xs[whole + 1] - xs[whole]) * part,
+          ys[whole] + (ys[whole + 1] - ys[whole]) * part,
+        );
+      }
     };
 
     // Parallax as a transform rather than a per-point offset, so the cached
@@ -378,27 +533,36 @@ function drawRidges(
       (frame.pointer - 0.5) * (4 + 1.6 * i),
       -frame.exit * (8 + 5.5 * i),
     );
-    if (alpha < 1) ctx.globalAlpha = alpha;
 
-    crest();
-    ctx.lineTo(right, h + UNDERSCAN);
-    ctx.lineTo(left, h + UNDERSCAN);
-    ctx.closePath();
-    ctx.fillStyle = cache.fills[i];
-    ctx.fill();
+    const fillAlpha = front ? seq.frontFill : alpha;
+    if (fillAlpha > 0.002) {
+      ctx.globalAlpha = fillAlpha;
+      crest();
+      ctx.lineTo(right, h + UNDERSCAN);
+      ctx.lineTo(left, h + UNDERSCAN);
+      ctx.closePath();
+      ctx.fillStyle = cache.fills[i];
+      ctx.fill();
+    }
+    // The frontmost crest was lit while it was still being sampled, before it
+    // had any fill at all, so on the way in the two do not share an alpha.
+    ctx.globalAlpha = front ? 1 : alpha;
 
     // Rim light over the crest only, never the closed path.
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    crest();
-    ctx.strokeStyle = cache.glows[i];
-    ctx.lineWidth = 6 * s;
-    ctx.stroke();
+    const traced = front ? seq.trace : 1;
+    if (traced > 0) {
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      crest(traced);
+      ctx.strokeStyle = cache.glows[i];
+      ctx.lineWidth = 6 * s;
+      ctx.stroke();
 
-    crest();
-    ctx.strokeStyle = cache.rims[i];
-    ctx.lineWidth = (0.85 + 0.95 * f) * s;
-    ctx.stroke();
+      crest(traced);
+      ctx.strokeStyle = cache.rims[i];
+      ctx.lineWidth = (0.85 + 0.95 * f) * s;
+      ctx.stroke();
+    }
 
     ctx.restore();
 
@@ -412,6 +576,32 @@ function drawRidges(
     }
   }
   ctx.globalAlpha = 1;
+}
+
+/**
+ * The sample cloud. Redrawn whole every frame rather than accumulated into a
+ * layer, because it has to fade out as one object; 420 arcs batched into a
+ * single fill is far cheaper than the ridges it sits under.
+ */
+function drawSamples(
+  ctx: CanvasRenderingContext2D,
+  samples: Sample[],
+  seq: Seq,
+) {
+  const count = Math.round(samples.length * seq.dots);
+  if (count <= 0) return;
+  // Each draw starts bright enough to register on its own, then eases back as
+  // the cloud fills, so the shape comes from density rather than from glare.
+  ctx.fillStyle = rgba(ACCENT, (0.8 - 0.34 * seq.dots) * seq.dotAlpha);
+  ctx.beginPath();
+  for (let k = 0; k < count; k++) {
+    const p = samples[k];
+    // Start each arc at its own rightmost point, or the path picks up a
+    // connecting line from wherever the previous one ended.
+    ctx.moveTo(p.x + p.r, p.y);
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
 }
 
 /**
@@ -575,11 +765,23 @@ function protectRegions(root: HTMLElement, origin: DOMRect) {
 
 export function RidgeScene({
   protect = [],
+  onReveal,
 }: {
   /** Elements whose text must stay legible against the rendered canvas. */
   protect?: RefObject<HTMLElement | null>[];
+  /**
+   * Called when the copy should come in: at the end of the opening sequence,
+   * or immediately when there is no sequence to play. Held in a ref so that a
+   * new callback identity cannot restart the sequence by re-running the effect.
+   */
+  onReveal?: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const revealRef = useRef(onReveal);
+
+  useEffect(() => {
+    revealRef.current = onReveal;
+  }, [onReveal]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -590,9 +792,9 @@ export function RidgeScene({
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let L = layout(1, 1);
+    // Sky, aurora, stars and the softened far field, flattened into one layer.
     let backdrop: HTMLCanvasElement | null = null;
     let overlays: HTMLCanvasElement | null = null;
-    let farField: HTMLCanvasElement | null = null;
     let far = 0;
     let cache: Cache | null = null;
     let raf = 0;
@@ -601,7 +803,7 @@ export function RidgeScene({
     let disposed = false;
 
     // Once per session, not per visit to the route: watching the field assemble
-    // is worth 1.5s the first time and an obstacle every time after.
+    // itself is worth 1.2s the first time and an obstacle every time after.
     let introStart = 0;
     let playIntro = false;
     try {
@@ -609,6 +811,26 @@ export function RidgeScene({
     } catch {
       playIntro = !reduce;
     }
+
+    /** Elapsed ms at which sampling gave way to the crest, 0 while sampling. */
+    let sampled = 0;
+    let fontsReady = false;
+    let revealed = false;
+    let samples: Sample[] = [];
+    let liftPx = 0;
+    let ampBoost = 1;
+    /** Frame size the cached layers were last built for. */
+    let builtW = 0;
+    let builtH = 0;
+
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      // Releases the nav, which the document held back before first paint so
+      // that no frame of it could land on the black sampling screen.
+      delete document.documentElement.dataset.intro;
+      revealRef.current?.();
+    };
 
     const layerCanvas = (w: number, h: number, dpr: number) => {
       const c = document.createElement("canvas");
@@ -629,6 +851,8 @@ export function RidgeScene({
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+      builtW = w;
+      builtH = h;
       L = layout(w, h);
 
       const b = layerCanvas(w, h, dpr);
@@ -659,13 +883,51 @@ export function RidgeScene({
         drawRidges(
           fl.c2,
           L,
-          { t: 3.4, pointer: 0.5, reveal: 1, exit: 0 },
+          {
+            t: 3.4,
+            pointer: 0.5,
+            exit: 0,
+            seq: SETTLED,
+            liftPx: 0,
+            ampBoost: 1,
+          },
           buildCache(fl.c2, L),
           0,
           far,
         );
       }
-      farField = fl.c;
+      // Flattened onto the backdrop rather than composited over it every frame.
+      // The far field takes no parallax — distant things barely move, and
+      // holding it still is what makes the near ridges' drift read as depth —
+      // so it never needs to move independently of the sky behind it. That
+      // makes it one full-frame blend per frame instead of two, which is what
+      // was starving the main thread during the settle, and it also means the
+      // whole distant plane fades up as a single object.
+      if (b.c2) b.c2.drawImage(fl.c, 0, 0, w, h);
+
+      /**
+       * Where the frontmost crest is held while it is being sampled. In place
+       * its baseline sits near the foot of the frame, which would put the whole
+       * cloud in a low band across the bottom; raised and enlarged, the
+       * distribution reads as one shape in the middle of the screen, and the
+       * settle phase then lowers it home. Both are load-bearing rather than
+       * decoration — sampled in place it does not read at all.
+       */
+      const front = L.n - 1;
+      const { baseline, amp } = ridgeGeometry(L, front);
+      const settledCrest = amp * ridgePeak(front, 0);
+      ampBoost = Math.min(4, Math.max(1, (h * SAMPLE_CREST) / settledCrest));
+      const crestH = settledCrest * ampBoost;
+      const held = Math.min(h * 0.8, crestH + h * 0.22);
+      liftPx = Math.max(0, baseline - held);
+      samples = sampleUnderRidge(
+        L,
+        front,
+        held,
+        TARGET_SAMPLES,
+        9137,
+        ampBoost,
+      );
     };
 
     // Cursor parallax, lerped toward the pointer so it eases rather than snaps.
@@ -675,34 +937,44 @@ export function RidgeScene({
 
     const exitAt = (y: number) => clamp01(y / 460);
 
-    const render = (t: number, reveal: number) => {
+    const render = (t: number, seq: Seq) => {
       const { w, h } = L;
       if (!cache) return;
       ctx.clearRect(0, 0, w, h);
-      if (backdrop) ctx.drawImage(backdrop, 0, 0, w, h);
+      // Painted every frame rather than left to the page behind: while the
+      // cloud is accumulating there is no backdrop yet, and the samples have to
+      // land on something opaque.
+      ctx.fillStyle = BG;
+      ctx.fillRect(0, 0, w, h);
 
-      if (farField) {
-        // The far field gets no parallax. Distant things barely move, and
-        // holding it still is what makes the near ridges' drift read as depth.
-        ctx.globalAlpha = reveal < 1 ? smoothstep(reveal / FAR_FADE) : 1;
-        ctx.drawImage(farField, 0, 0, w, h);
+      if (backdrop && seq.backdrop > 0.002) {
+        ctx.globalAlpha = seq.backdrop;
+        ctx.drawImage(backdrop, 0, 0, w, h);
         ctx.globalAlpha = 1;
       }
+
+      if (seq.dotAlpha > 0.002) drawSamples(ctx, samples, seq);
 
       drawRidges(
         ctx,
         L,
-        { t, pointer, reveal, exit: exitAt(window.scrollY) },
+        { t, pointer, exit: exitAt(window.scrollY), seq, liftPx, ampBoost },
         cache,
         far,
         L.n,
       );
-      if (overlays) ctx.drawImage(overlays, 0, 0, w, h);
+
+      if (overlays && seq.backdrop > 0.002) {
+        ctx.globalAlpha = seq.backdrop;
+        ctx.drawImage(overlays, 0, 0, w, h);
+        ctx.globalAlpha = 1;
+      }
     };
 
     // Phones settle to one frame: the composition is the point, and a permanent
     // rAF loop is not worth the battery on a device that is mostly scrolled
-    // past. They still get the intro, which is 1.5s of work, not a standing cost.
+    // past. They still get the opening, which is 1.2s of work, not a standing
+    // cost.
     const staticOnly = () => reduce || L.w < 768;
 
     const start = performance.now();
@@ -710,25 +982,39 @@ export function RidgeScene({
       if (disposed) return;
       raf = requestAnimationFrame(loop);
 
-      const reveal = playIntro ? clamp01((now - introStart) / INTRO_MS) : 1;
+      let seq = SETTLED;
+      let finishing = false;
+      if (playIntro) {
+        const e = now - introStart;
+        // Sampling ends on readiness rather than on the clock, so the cloud is
+        // never cut off part-drawn and the copy never lands ahead of its fonts.
+        const held = fontsReady || e >= SAMPLE_MS + FONT_GRACE_MS;
+        if (!sampled && e >= SAMPLE_MS && held) sampled = e;
+        seq = sequence(e, sampled);
+        // Measured back from where the scene actually ends, which moves when
+        // sampling holds for the fonts. Against a fixed time the copy would
+        // overtake the settle on a cold font cache.
+        const ends = (sampled || SAMPLE_MS) + RESOLVE_MS + SETTLE_MS;
+        if (e >= ends - CONTENT_LEAD_MS) reveal();
+        if (seq === SETTLED) {
+          playIntro = false;
+          finishing = true;
+        }
+      }
+
       const scrolling = now - lastScroll < 240;
       // ~30fps normally: the undulation is slow enough that 60 buys nothing
-      // visible. The intro and the scroll parallax are the two places where a
+      // visible. The opening and the scroll parallax are the two places where a
       // stepped 30fps reads against smooth motion, so they get every frame.
-      const budget = reveal < 1 || scrolling ? 0 : 33;
+      const budget = playIntro || finishing || scrolling ? 0 : 33;
       if (now - lastFrame < budget) return;
       lastFrame = now;
 
       pointer += (pointerTarget - pointer) * 0.12;
-      render(((now - start) / 1000) * 0.35, reveal);
+      render(((now - start) / 1000) * 0.35, seq);
 
-      if (playIntro && reveal >= 1) {
-        playIntro = false;
-        try {
-          sessionStorage.setItem("ridge-intro", "done");
-        } catch {}
-        if (staticOnly()) stop();
-      }
+      // Only after the settled frame is actually on the canvas.
+      if (finishing && staticOnly()) stop();
     };
 
     const stop = () => {
@@ -748,13 +1034,39 @@ export function RidgeScene({
     const settle = () => {
       rebuild();
       if (playIntro) {
-        if (!introStart) introStart = performance.now();
+        if (!introStart) {
+          introStart = performance.now();
+          // Marked as the sequence begins rather than as it ends, so that a
+          // reload part-way through does not replay it.
+          try {
+            sessionStorage.setItem("ridge-intro", "done");
+          } catch {}
+        }
         resume();
-      } else if (staticOnly()) {
+      } else {
+        reveal();
+        if (staticOnly()) {
+          stop();
+          render(3.4, SETTLED);
+        } else if (!running) {
+          resume();
+        }
+      }
+    };
+
+    /**
+     * Any keypress abandons the sequence and lands on the finished scene. Tab
+     * counts, which is what keeps a keyboard user from ever reaching the copy's
+     * controls while they are still invisible — the default focus move then
+     * lands on a revealed page.
+     */
+    const skip = () => {
+      if (!playIntro) return;
+      playIntro = false;
+      reveal();
+      if (staticOnly()) {
         stop();
-        render(3.4, 1);
-      } else if (!running) {
-        resume();
+        render(3.4, SETTLED);
       }
     };
 
@@ -763,15 +1075,53 @@ export function RidgeScene({
     let resizeTimer = 0;
     const onResize = () => {
       window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(settle, 150);
+      resizeTimer = window.setTimeout(() => {
+        // Both observers fire once the moment they attach, so without this the
+        // sequence always ate a full rebuild about 150ms in — a forced layout
+        // and a full-size scratch canvas per veil — which stalled the main
+        // thread for long enough to delay its own handover. A rebuild is only
+        // warranted when the frame really changed size; the timer below covers
+        // re-measuring the veils once the copy has landed.
+        const r = canvas.getBoundingClientRect();
+        if (Math.round(r.width) === builtW && Math.round(r.height) === builtH) {
+          return;
+        }
+        settle();
+      }, 150);
     };
 
-    // The copy arrives with a staggered y-offset intro and the webfonts swap in
-    // after first paint, both of which move the boxes the veils are sized from.
-    const settleTimer = window.setTimeout(settle, 1500);
+    // The copy arrives with a staggered y-offset and the webfonts swap in after
+    // first paint, both of which move the boxes the veils are sized from. Timed
+    // past the end of that stagger rather than the end of the scene.
+    const settleTimer = window.setTimeout(
+      settle,
+      SCENE_MS + FONT_GRACE_MS + 800,
+    );
+    // Backstop for the reveal, which the loop normally fires ~450ms earlier.
+    // Nothing the animation does may end with the copy still hidden.
+    const revealTimer = window.setTimeout(
+      reveal,
+      SCENE_MS + FONT_GRACE_MS + 300,
+    );
     const ro = new ResizeObserver(onResize);
     for (const r of protect) if (r.current) ro.observe(r.current);
-    if (document.fonts) document.fonts.ready.then(onResize).catch(() => {});
+    if (document.fonts) {
+      document.fonts.ready
+        .then(() => {
+          fontsReady = true;
+          // Not while the sequence is running. Re-measuring means a full
+          // rebuild — forced layout, then several full-size scratch canvases
+          // for the veils — and it would land mid-animation to reposition veils
+          // under copy that is still invisible. The timer above picks it up once
+          // the copy has settled, which is the only moment the answer is right.
+          if (!playIntro) onResize();
+        })
+        .catch(() => {
+          fontsReady = true;
+        });
+    } else {
+      fontsReady = true;
+    }
 
     /**
      * The hero is position:fixed and never leaves the viewport, so an
@@ -780,13 +1130,16 @@ export function RidgeScene({
      */
     const onScroll = () => {
       lastScroll = performance.now();
-      if (staticOnly()) return;
+      // Never park the loop while the opening is still running. It owns the
+      // reveal, so stopping it here would strand the copy hidden.
+      if (playIntro || staticOnly()) return;
       if (window.scrollY > 560) stop();
       else resume();
     };
 
     const onVisibility = () => {
       if (document.hidden) stop();
+      else if (playIntro) resume();
       else onScroll();
     };
 
@@ -800,6 +1153,7 @@ export function RidgeScene({
     if (!staticOnly())
       window.addEventListener("pointermove", onPointer, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("keydown", skip);
 
     return () => {
       disposed = true;
@@ -807,9 +1161,11 @@ export function RidgeScene({
       ro.disconnect();
       window.clearTimeout(resizeTimer);
       window.clearTimeout(settleTimer);
+      window.clearTimeout(revealTimer);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("keydown", skip);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [protect]);

@@ -212,6 +212,27 @@ html::after {
     );
 }
 
+/* The nav arrives with the hero copy, after the opening sequence has assembled
+   the landscape. At scroll 0 the nav is a full-width bar with a hairline edge,
+   and a single frame of it sitting on the black sampling screen gives the whole
+   thing away.
+
+   Held by an attribute the page sets before first paint, and released by the
+   canvas at the same moment it releases the copy. An animation with a matching
+   delay was the obvious alternative and it is subtly wrong: CSS would start
+   counting at first paint while the canvas starts at hydration, so the two
+   drift apart by however long hydration takes — over a second on a cold dev
+   server. One clock, one source of truth. */
+@media (prefers-reduced-motion: no-preference) {
+  .intro-gate {
+    transition: opacity 300ms ease-out;
+  }
+}
+
+html[data-intro="running"] .intro-gate {
+  opacity: 0;
+}
+
 /* Drop cap for the first paragraph of long-form prose (About). */
 .drop-cap::first-letter {
   font-family: var(--font-serif), Georgia, serif;

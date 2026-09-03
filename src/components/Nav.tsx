@@ -42,7 +42,7 @@ export function Nav() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40">
+    <header className="intro-gate fixed inset-x-0 top-0 z-40">
       <div
         // The bar exists at scroll=0 (bg/blur/border are always present),
         // it's just full-width and rectangular. On scroll, width and
