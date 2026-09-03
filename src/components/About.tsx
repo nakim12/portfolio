@@ -16,16 +16,18 @@ export function About() {
             revealing patterns that inform meaningful decisions.
           </p>
           <p>
-            Right now I&apos;m building real-time voice and vision
-            infrastructure for an AI agent. I spent the first half of 2026 as a
-            data science intern at BlueAlpha, building synthetic data generators
-            and benchmarking workflows for Marketing Mix Modeling — work I
-            carried into Juno, an agentic copilot that interprets MMM outputs
-            and ships with a benchmark measuring how far its advice can be
-            trusted. Before that I spent nine months at NCEAS designing
-            reproducible pipelines for biodiversity data. On the side, I build
-            agentic AI projects like Romus, a real-time computer vision form
-            coach, and Dialed, a multi-agent guardrail layer for social media.
+            Right now I&apos;m building the real-time voice and vision stack for
+            an AI agent that joins Discord calls and plays multiplayer games
+            alongside you, with sub-420ms voice latency and 60+ FPS live
+            game-state detection. I spent the first half of 2026 as a data
+            science intern at BlueAlpha, building synthetic data generators and
+            benchmarking workflows for Marketing Mix Modeling — work I carried
+            into Juno, an agentic copilot that interprets MMM outputs and ships
+            with a benchmark measuring how far its advice can be trusted. Before
+            that I spent nine months at NCEAS designing reproducible pipelines
+            for biodiversity data. On the side, I build agentic AI projects like
+            Romus, a real-time computer vision form coach, and Dialed, a
+            multi-agent guardrail layer for social media.
           </p>
           <p>
             Outside of code, you will find me reading books, going on runs,

@@ -2,7 +2,7 @@ export const profile = {
   name: "Nathan Kim",
   handle: "nakim12",
   headline:
-    "I build applied AI/ML systems and the evaluation frameworks that prove they actually work.",
+    "I build applied AI/ML systems and the evaluation frameworks that prove they work.",
   intro:
     "Recent Statistics & Data Science + Technology Management graduate from UC Santa Barbara.",
   location: "Goleta, CA",
