@@ -270,6 +270,18 @@ const OVERSCAN = 0.03;
 const UNDERSCAN = 140;
 
 /**
+ * Deliberately below the 2 a retina display asks for. The scene is soft
+ * gradients, haze and 1px crest strokes — there is no high-frequency detail
+ * that a second sample per axis resolves, so the only thing full DPR buys is
+ * pixels. It costs a lot of them: at 2 a 1440x900 hero rasterizes 5.2M pixels
+ * per frame, and every frame lays down a dozen near-full-frame gradient fills
+ * over it. That work happens after the draw calls return, in the compositor,
+ * which is why it never showed up as slow JavaScript — only as dropped frames.
+ * 1.5 is 44% of the pixels and the difference is not visible on this content.
+ */
+const MAX_DPR = 1.5;
+
+/**
  * The opening sequence, once per session, in four phases.
  *
  *   sampling  points accumulate under the frontmost ridge's own density
@@ -822,6 +834,7 @@ export function RidgeScene({
     /** Frame size the cached layers were last built for. */
     let builtW = 0;
     let builtH = 0;
+    let builtDpr = 1;
 
     const reveal = () => {
       if (revealed) return;
@@ -841,11 +854,31 @@ export function RidgeScene({
       return { c, c2 };
     };
 
+    /**
+     * The readability veils alone. Split out because they are the only cached
+     * thing whose input changes after the frame has been built: they are sized
+     * from the copy's boxes, which move as it staggers in and as the webfonts
+     * swap. Re-measuring used to go through the full rebuild, which also redrew
+     * the backdrop's gradient stack, re-rendered the far field and re-sampled
+     * the cloud — none of which depend on where the text sits — and landed as a
+     * visible hitch a couple of seconds in, right as the page became scrollable.
+     */
+    const buildOverlays = () => {
+      const origin = canvas.getBoundingClientRect();
+      const regions = protect
+        .map((r) => (r.current ? protectRegions(r.current, origin) : null))
+        .filter((r): r is { base: Box; strong: Box[] } => r !== null);
+
+      const o = layerCanvas(builtW, builtH, builtDpr);
+      if (o.c2) drawOverlays(o.c2, L, builtDpr, regions);
+      overlays = o.c;
+    };
+
     const rebuild = () => {
       const rect = canvas.getBoundingClientRect();
       const w = Math.max(1, Math.round(rect.width));
       const h = Math.max(1, Math.round(rect.height));
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -853,20 +886,14 @@ export function RidgeScene({
 
       builtW = w;
       builtH = h;
+      builtDpr = dpr;
       L = layout(w, h);
 
       const b = layerCanvas(w, h, dpr);
       if (b.c2) drawBackdrop(b.c2, L);
       backdrop = b.c;
 
-      const origin = canvas.getBoundingClientRect();
-      const regions = protect
-        .map((r) => (r.current ? protectRegions(r.current, origin) : null))
-        .filter((r): r is { base: Box; strong: Box[] } => r !== null);
-
-      const o = layerCanvas(w, h, dpr);
-      if (o.c2) drawOverlays(o.c2, L, dpr, regions);
-      overlays = o.c;
+      buildOverlays();
 
       cache = buildCache(ctx, L);
 
@@ -933,7 +960,7 @@ export function RidgeScene({
     // Cursor parallax, lerped toward the pointer so it eases rather than snaps.
     let pointerTarget = 0.5;
     let pointer = 0.5;
-    let lastScroll = -Infinity;
+    let scrollY = 0;
 
     const exitAt = (y: number) => clamp01(y / 460);
 
@@ -941,11 +968,13 @@ export function RidgeScene({
       const { w, h } = L;
       if (!cache) return;
       ctx.clearRect(0, 0, w, h);
-      // Painted every frame rather than left to the page behind: while the
-      // cloud is accumulating there is no backdrop yet, and the samples have to
-      // land on something opaque.
-      ctx.fillStyle = BG;
-      ctx.fillRect(0, 0, w, h);
+      // Only while the backdrop is still fading up. It is opaque and covers the
+      // frame, so once it is fully in this is a whole extra screen of fill for
+      // pixels that are about to be overpainted anyway.
+      if (seq.backdrop < 0.999) {
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, w, h);
+      }
 
       if (backdrop && seq.backdrop > 0.002) {
         ctx.globalAlpha = seq.backdrop;
@@ -958,7 +987,7 @@ export function RidgeScene({
       drawRidges(
         ctx,
         L,
-        { t, pointer, exit: exitAt(window.scrollY), seq, liftPx, ampBoost },
+        { t, pointer, exit: exitAt(scrollY), seq, liftPx, ampBoost },
         cache,
         far,
         L.n,
@@ -1002,11 +1031,15 @@ export function RidgeScene({
         }
       }
 
-      const scrolling = now - lastScroll < 240;
-      // ~30fps normally: the undulation is slow enough that 60 buys nothing
-      // visible. The opening and the scroll parallax are the two places where a
-      // stepped 30fps reads against smooth motion, so they get every frame.
-      const budget = playIntro || finishing || scrolling ? 0 : 33;
+      // ~30fps: the undulation is slow enough that 60 buys nothing visible. The
+      // opening is the one place a stepped 30fps reads against smooth motion,
+      // so it gets every frame.
+      //
+      // Scrolling used to get every frame too, for the parallax. That was
+      // exactly backwards: it doubled this canvas's raster load at the one
+      // moment the compositor is already busy scrolling the rest of the page,
+      // and the parallax it bought is a slow drift behind a fading hero.
+      const budget = playIntro || finishing ? 0 : 33;
       if (now - lastFrame < budget) return;
       lastFrame = now;
 
@@ -1031,8 +1064,9 @@ export function RidgeScene({
       raf = requestAnimationFrame(loop);
     };
 
-    const settle = () => {
-      rebuild();
+    const settle = (full = true) => {
+      if (full) rebuild();
+      else buildOverlays();
       if (playIntro) {
         if (!introStart) {
           introStart = performance.now();
@@ -1092,9 +1126,10 @@ export function RidgeScene({
 
     // The copy arrives with a staggered y-offset and the webfonts swap in after
     // first paint, both of which move the boxes the veils are sized from. Timed
-    // past the end of that stagger rather than the end of the scene.
+    // past the end of that stagger rather than the end of the scene. Veils only:
+    // the frame has not changed size, so nothing else here is stale.
     const settleTimer = window.setTimeout(
-      settle,
+      () => settle(false),
       SCENE_MS + FONT_GRACE_MS + 800,
     );
     // Backstop for the reveal, which the loop normally fires ~450ms earlier.
@@ -1129,11 +1164,13 @@ export function RidgeScene({
      * ~500px of scroll instead, so that is the real "off-screen" signal.
      */
     const onScroll = () => {
-      lastScroll = performance.now();
+      // Read once here rather than per frame inside the render, so the loop
+      // never touches layout.
+      scrollY = window.scrollY;
       // Never park the loop while the opening is still running. It owns the
       // reveal, so stopping it here would strand the copy hidden.
       if (playIntro || staticOnly()) return;
-      if (window.scrollY > 560) stop();
+      if (scrollY > 560) stop();
       else resume();
     };
 
@@ -1148,6 +1185,7 @@ export function RidgeScene({
       pointerTarget = Math.min(1, Math.max(0, e.clientX / window.innerWidth));
     };
 
+    scrollY = window.scrollY;
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, { passive: true });
     if (!staticOnly())

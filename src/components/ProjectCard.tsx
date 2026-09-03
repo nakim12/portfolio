@@ -90,7 +90,6 @@ export function ProjectCard({ project, index, featured = false }: Props) {
             alt={`${project.title} preview`}
             fill
             sizes="(min-width: 1024px) 568px, 100vw"
-            priority={featured}
             className="object-cover transition-transform duration-[240ms] ease-out motion-safe:group-hover:scale-[1.02]"
           />
 
