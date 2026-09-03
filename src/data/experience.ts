@@ -9,6 +9,19 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
+    company: "Stealth AI Startup",
+    role: "AI/ML Engineer Intern",
+    location: "San Francisco, CA",
+    start: "Jun 2026",
+    end: "Present",
+    bullets: [
+      "Built the real-time voice and vision stack for an AI agent that joins Discord voice calls and plays live multiplayer games alongside users, cutting end-to-end voice latency from ~800ms to under 420ms.",
+      "Designed a per-game harness separating Claude-based strategic reasoning from a sub-frame control loop, allowing high-level decisions and frame-level actions to run on independent timing.",
+      "Trained and deployed a 60+ FPS YOLOv8 detector for live game-state extraction, feeding structured observations into the agent's decision layer.",
+      "Implemented Postgres-backed cross-session memory with SQLite failover, plus a Chrome-extension computer-use agent for mid-game web navigation.",
+    ],
+  },
+  {
     company: "BlueAlpha",
     role: "Data Science Intern",
     location: "San Francisco, CA",
