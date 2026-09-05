@@ -11,7 +11,7 @@ export const experience: Experience[] = [
   {
     company: "Stealth AI Startup",
     role: "AI/ML Engineer Intern",
-    location: "San Francisco, CA",
+    location: "San Francisco, CA (Remote)",
     start: "Jun 2026",
     end: "Present",
     bullets: [
